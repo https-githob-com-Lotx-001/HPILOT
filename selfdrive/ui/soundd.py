@@ -224,7 +224,8 @@ class Soundd:
     theme_configuration = {
       1: "frog_theme",
       2: "tesla_theme",
-      3: "stalin_theme"
+      3: "stalin_theme",
+      4: "hpilot_theme"
     }
 
     holiday_themes = custom_theme and self.params.get_bool("HolidayThemes")
