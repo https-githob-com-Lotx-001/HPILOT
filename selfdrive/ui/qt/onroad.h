@@ -255,6 +255,10 @@ private:
   int obstacleDistanceStock;
   int totalFrames = 8;
 
+  bool showTorque;
+  float latAccelFactor;
+  float frictionCoefficient;
+
   QString leadDistanceUnit;
   QString leadSpeedUnit;
   QString themePath;

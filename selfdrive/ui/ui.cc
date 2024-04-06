@@ -303,6 +303,12 @@ static void update_state(UIState *s) {
                                  sm.rcv_frame("liveCalibration") > scene.started_frame &&
                                  sm.rcv_frame("modelV2") > scene.started_frame &&
                                  sm.rcv_frame("uiPlan") > scene.started_frame);
+
+  if (sm.updated("liveTorqueParameters")) {
+    auto torque_params = sm["liveTorqueParameters"].getLiveTorqueParameters();
+    scene.lat_accel_filtered = torque_params.getLatAccelFactorFiltered();
+    scene.friction_filtered = torque_params.getFrictionCoefficientFiltered();
+  }
 }
 
 void ui_update_params(UIState *s) {
@@ -400,6 +406,8 @@ void ui_update_frogpilot_params(UIState *s) {
   scene.use_vienna_slc_sign = scene.speed_limit_controller && params.getBool("UseVienna");
 
   scene.wheel_icon = params.getInt("WheelIcon");
+
+  scene.show_torque = params.getBool("ShowTorqueParams");
 }
 
 void UIState::updateStatus() {
@@ -441,7 +449,7 @@ UIState::UIState(QObject *parent) : QObject(parent) {
     "modelV2", "controlsState", "liveCalibration", "radarState", "deviceState",
     "pandaStates", "carParams", "driverMonitoringState", "carState", "liveLocationKalman", "driverStateV2",
     "wideRoadCameraState", "managerState", "navInstruction", "navRoute", "uiPlan",
-    "frogpilotCarControl", "frogpilotDeviceState", "frogpilotPlan",
+    "frogpilotCarControl", "frogpilotDeviceState", "frogpilotPlan", "liveTorqueParameters",
   });
 
   Params params;

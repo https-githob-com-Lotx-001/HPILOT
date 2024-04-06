@@ -1593,6 +1593,10 @@ void AnnotatedCameraWidget::updateFrogPilotWidgets(QPainter &p) {
   turnSignalLeft = scene.turn_signal_left;
   turnSignalRight = scene.turn_signal_right;
 
+  showTorque = scene.show_torque;
+  latAccelFactor = scene.lat_accel_filtered;
+  frictionCoefficient = scene.friction_filtered;
+
   if (!(showDriverCamera || fullMapOpen)) {
     if (leadInfo) {
       drawLeadInfo(p);
@@ -2099,41 +2103,51 @@ void AnnotatedCameraWidget::drawStatusBar(QPainter &p) {
 
   QString roadName = roadNameUI ? QString::fromStdString(paramsMemory.get("RoadName")) : QString();
 
+  if (showTorque) {
+    newStatus = "[ Lateral Acceleration: " + QString::number(latAccelFactor) + " ]  |  [ Friction: " + QString::number(frictionCoefficient) + " ]";
+  } else {
   // Update status text
-  if (alwaysOnLateralActive) {
-    newStatus = QString("Always On Lateral active") + (mapOpen ? "" : ". Press the \"Cruise Control\" button to disable");
-  } else if (conditionalExperimental) {
-    newStatus = conditionalStatusMap[status != STATUS_DISENGAGED ? conditionalStatus : 0];
-  }
+    if (alwaysOnLateralActive && !showTorque) {
+      newStatus = QString("Always On Lateral active") + (mapOpen ? "" : ". Press the \"Cruise Control\" button to disable");
+    } else if (conditionalExperimental && !showTorque) {
+      newStatus = conditionalStatusMap[status != STATUS_DISENGAGED ? conditionalStatus : 0];
+    }
 
-  // Append suffix to the status
-  QString distanceSuffix = ". Long press the \"distance\" button to revert";
-  QString lkasSuffix = ". Double press the \"LKAS\" button to revert";
-  QString screenSuffix = ". Double tap the screen to revert";
+    // Append suffix to the status
+    QString distanceSuffix = ". Long press the \"distance\" button to revert";
+    QString lkasSuffix = ". Double press the \"LKAS\" button to revert";
+    QString screenSuffix = ". Double tap the screen to revert";
 
-  if (!alwaysOnLateralActive && !mapOpen && status != STATUS_DISENGAGED && !newStatus.isEmpty()) {
-    if (conditionalStatus == 1 || conditionalStatus == 2) {
-      newStatus += screenSuffix;
-    } else if (conditionalStatus == 3 || conditionalStatus == 4) {
-      newStatus += distanceSuffix;
-    } else if (conditionalStatus == 5 || conditionalStatus == 6) {
-      newStatus += lkasSuffix;
+    if (!alwaysOnLateralActive && !mapOpen && status != STATUS_DISENGAGED && !newStatus.isEmpty()) {
+      if (conditionalStatus == 1 || conditionalStatus == 2) {
+        newStatus += screenSuffix;
+      } else if (conditionalStatus == 3 || conditionalStatus == 4) {
+        newStatus += distanceSuffix;
+      } else if (conditionalStatus == 5 || conditionalStatus == 6) {
+        newStatus += lkasSuffix;
+      }
     }
   }
-
   // Check if status has changed or if the road name is empty
-  if (newStatus != lastShownStatus || roadName.isEmpty()) {
+  if (newStatus != lastShownStatus || roadName.isEmpty() || showTorque) {
     displayStatusText = true;
     lastShownStatus = newStatus;
     timer.restart();
   } else if (displayStatusText && timer.hasExpired(textDuration + fadeDuration)) {
-    displayStatusText = false;
+      displayStatusText = false;
   }
 
+
   // Configure the text
-  p.setFont(InterFont(40, QFont::Bold));
-  p.setPen(Qt::white);
-  p.setRenderHint(QPainter::TextAntialiasing);
+  if (showTorque) {
+    p.setFont(InterFont(42, QFont::DemiBold));
+    p.setPen(Qt::green);
+    p.setRenderHint(QPainter::TextAntialiasing);
+  } else {
+    p.setFont(InterFont(40, QFont::Bold));
+    p.setPen(Qt::white);
+    p.setRenderHint(QPainter::TextAntialiasing);
+  }
 
   // Calculate text opacity
   static qreal roadNameOpacity;

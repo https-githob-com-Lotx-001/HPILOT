@@ -277,6 +277,11 @@ typedef struct UIScene {
   int stopped_equivalence;
   int wheel_icon;
 
+  // Hpilot stuff
+  bool show_torque;
+  float lat_accel_filtered;
+  float friction_filtered;
+
   QPolygonF track_adjacent_vertices[6];
   QPolygonF track_edge_vertices;
 

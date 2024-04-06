@@ -72,9 +72,14 @@ class TorqueEstimator(ParameterEstimator):
     self.resets = 0.0
     self.use_params = CP.carName in ALLOWED_CARS and CP.lateralTuning.which() == 'torque'
 
+    params = Params()
+    self.custom_offline_params = params.get_bool("CustomOfflineParams")
+    self.custom_offline_friction = 0.0
+    self.custom_offline_lat_accel = 0.0
+
     if CP.lateralTuning.which() == 'torque':
-      self.offline_friction = CP.lateralTuning.torque.friction
-      self.offline_latAccelFactor = CP.lateralTuning.torque.latAccelFactor
+      self.offline_friction = CP.lateralTuning.torque.friction if not self.custom_offline_params else self.custom_offline_friction
+      self.offline_latAccelFactor = CP.lateralTuning.torque.latAccelFactor if not self.custom_offline_params else self.custom_offline_lat_accel
 
     self.reset()
 
@@ -91,7 +96,6 @@ class TorqueEstimator(ParameterEstimator):
     self.max_friction = (1.0 + self.friction_sanity) * self.offline_friction
 
     # try to restore cached params
-    params = Params()
     params_cache = params.get("CarParamsPrevRoute")
     torque_cache = params.get("LiveTorqueParameters")
     if params_cache is not None and torque_cache is not None:
