@@ -37,9 +37,12 @@ FrogPilotControlsPanel::FrogPilotControlsPanel(SettingsWindow *parent) : FrogPil
     {"NNFF", "NNFF - Neural Network Feedforward", "Use Twilsonco's Neural Network Feedforward for enhanced precision in lateral control.", ""},
     {"SteerRatio", steerRatioStock != 0 ? QString("Steer Ratio (Default: %1)").arg(steerRatioStock, 0, 'f', 2) : "Steer Ratio", "Set a custom steer ratio for your vehicle controls.", ""},
 
-    {"CustomOfflineParams", "Custom Offline Tune", "Set custom offline lateral acceleration and friction values for the torque controller. Overrides the default values in params.toml.", ""},
+    {"CustomOfflineParams", "Custom Offline Tune", "Set custom offline tuning values for the torque controller. Overrides the default values in params.toml.", ""},
+    {"CustomLiveParams", "Custom Live Tune", "Set live tuning values that will be used immediately.", ""},
     {"OfflineLatAccel", "Offline Lat. Accel. Factor", "Set a custom lateral acceleration factor value.", ""},
     {"OfflineFriction", "Offline Friction Coefficient", "Set a custom friction coefficient value.", ""},
+    {"LiveLatAccel", "Live Lat. Accel.", "Set a custom live lateral acceleration factor value.", ""},
+    {"LiveFriction", "Live Friction", "Set a custom live friction coefficient value", ""},
     
     {"CustomTorque", "Override Torque Values", "Override the default steering torque values.", ""},
     {"SteerMax", "Steer Max (Default: 270)", "Adjust the maximum steering torque openpilot can apply.", ""},
@@ -264,6 +267,19 @@ FrogPilotControlsPanel::FrogPilotControlsPanel(SettingsWindow *parent) : FrogPil
       toggle = new FrogPilotParamValueControl(param, title, desc, icon, 0.0, 5.0, std::map<int, QString>(), this, false, "", 1, 0.01);
     } else if (param == "OfflineFriction") {
       toggle = new FrogPilotParamValueControl(param, title, desc, icon, 0.0, 1.0, std::map<int, QString>(), this, false, "", 1, 0.01);
+    } else if (param == "CustomLiveParams") {
+      FrogPilotParamManageControl *liveTuneToggle = new FrogPilotParamManageControl(param, title, desc, icon, this);
+      QObject::connect(liveTuneToggle, &FrogPilotParamManageControl::manageButtonClicked, this, [this]() {
+        parentToggleClicked();
+        for (auto &[key, toggle] : toggles) {
+          toggle->setVisible(liveTuneKeys.find(key.c_str()) != liveTuneKeys.end());
+        }
+      });
+      toggle = liveTuneToggle;
+    } else if (param == "LiveLatAccel") {
+      toggle = new FrogPilotParamValueControl(param, title, desc, icon, 0.0, 5.0, std::map<int, QString>(), this, false, "", 1, 0.01);
+    } else if (param == "LiveFriction") {
+      toggle = new FrogPilotParamValueControl(param, title, desc, icon, 0.0, 1.0, std::map<int, QString>(), this, false, "", 1, 0.01);      
     } else if (param == "CustomTorque") {
       FrogPilotParamManageControl *customTorqueToggle = new FrogPilotParamManageControl(param, title, desc, icon, this);
       QObject::connect(customTorqueToggle, &FrogPilotParamManageControl::manageButtonClicked, this, [this]() {
@@ -746,6 +762,7 @@ void FrogPilotControlsPanel::hideSubToggles() {
                       lateralTuneKeys.find(key.c_str()) != lateralTuneKeys.end() ||
                       customTorqueKeys.find(key.c_str()) != customTorqueKeys.end() ||
                       customTuneKeys.find(key.c_str()) != customTuneKeys.end() ||
+                      liveTuneKeys.find(key.c_str()) != liveTuneKeys.end() ||
                       longitudinalTuneKeys.find(key.c_str()) != longitudinalTuneKeys.end() ||
                       mtscKeys.find(key.c_str()) != mtscKeys.end() ||
                       qolKeys.find(key.c_str()) != qolKeys.end() ||

@@ -305,9 +305,14 @@ static void update_state(UIState *s) {
                                  sm.rcv_frame("uiPlan") > scene.started_frame);
 
   if (sm.updated("liveTorqueParameters")) {
-    auto torque_params = sm["liveTorqueParameters"].getLiveTorqueParameters();
-    scene.lat_accel_filtered = torque_params.getLatAccelFactorFiltered();
-    scene.friction_filtered = torque_params.getFrictionCoefficientFiltered();
+    if (!scene.live_tune) {  
+      auto torque_params = sm["liveTorqueParameters"].getLiveTorqueParameters();
+      scene.lat_accel = torque_params.getLatAccelFactorFiltered();
+      scene.friction = torque_params.getFrictionCoefficientFiltered();
+    } else {
+      scene.lat_accel = scene.custom_live_lat_accel;
+      scene.friction = scene.custom_live_friction;
+    }
   }
 }
 
@@ -408,6 +413,9 @@ void ui_update_frogpilot_params(UIState *s) {
   scene.wheel_icon = params.getInt("WheelIcon");
 
   scene.show_torque = params.getBool("ShowTorqueParams");
+  scene.live_tune = params.getBool("CustomLiveParams");
+  scene.custom_live_lat_accel = params.getFloat("LiveLatAccel");
+  scene.custom_live_friction = params.getFloat("LiveFriction");
 }
 
 void UIState::updateStatus() {

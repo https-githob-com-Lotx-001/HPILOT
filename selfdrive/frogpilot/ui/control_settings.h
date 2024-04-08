@@ -44,9 +44,10 @@ private:
   std::set<QString> experimentalModeActivationKeys = {"ExperimentalModeViaDistance", "ExperimentalModeViaLKAS", "ExperimentalModeViaScreen"};
   std::set<QString> customTorqueKeys = {"SteerMax", "DeltaUp", "DeltaDown", "DriverAllowance", "SteerThreshold"};  
   std::set<QString> customTuneKeys = {"OfflineLatAccel", "OfflineFriction"};  
+  std::set<QString> liveTuneKeys = {"LiveLatAccel", "LiveFriction"};
   std::set<QString> fireTheBabysitterKeys = {"NoLogging", "MuteOverheated", "NoUploads", "OfflineMode", "MuteDM", "MuteDoor", "MuteSeatbelt"};
   std::set<QString> laneChangeKeys = {"LaneChangeTime", "LaneDetection", "LaneDetectionWidth", "OneLaneChange"};
-  std::set<QString> lateralTuneKeys = {"CustomOfflineParams", "CustomTorque", "ForceAutoTune", "NNFF", "SteerRatio", "UseLateralJerk"};
+  std::set<QString> lateralTuneKeys = {"CustomOfflineParams", "CustomLiveParams", "CustomTorque", "ForceAutoTune", "NNFF", "SteerRatio", "UseLateralJerk"};
   std::set<QString> longitudinalTuneKeys = {"AccelerationProfile", "DecelerationProfile", "AggressiveAcceleration", "LeadDetectionThreshold", "SmoothBraking", "StoppingDistance", "TrafficMode"};
   std::set<QString> mtscKeys = {"DisableMTSCSmoothing", "MTSCAggressiveness", "MTSCCurvatureCheck", "MTSCLimit"};
   std::set<QString> qolKeys = {"DisableOnroadUploads", "HigherBitrate", "NavChill", "PauseLateralOnSignal", "ReverseCruise", "SetSpeedOffset"};

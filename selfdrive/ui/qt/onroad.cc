@@ -1340,7 +1340,7 @@ void AnnotatedCameraWidget::paintEvent(QPaintEvent *event) {
   QPainter painter(this);
   const double start_draw_t = millis_since_boot();
   const cereal::ModelDataV2::Reader &model = sm["modelV2"].getModelV2();
-
+  
   // draw camera frame
   {
     std::lock_guard lk(frame_lock);
@@ -1594,8 +1594,8 @@ void AnnotatedCameraWidget::updateFrogPilotWidgets(QPainter &p) {
   turnSignalRight = scene.turn_signal_right;
 
   showTorque = scene.show_torque;
-  latAccelFactor = scene.lat_accel_filtered;
-  frictionCoefficient = scene.friction_filtered;
+  latAccelFactor = scene.lat_accel;
+  frictionCoefficient = scene.friction;
 
   if (!(showDriverCamera || fullMapOpen)) {
     if (leadInfo) {
@@ -2077,7 +2077,7 @@ void AnnotatedCameraWidget::drawStatusBar(QPainter &p) {
 
   // Draw status bar
   QRect currentRect = rect();
-  QRect statusBarRect(currentRect.left() - 1, currentRect.bottom() - 50, currentRect.width() + 2, 100);
+  QRect statusBarRect(currentRect.left() - 1, currentRect.bottom() - 50, currentRect.width() + 2, 105);
   p.setBrush(QColor(0, 0, 0, 150));
   p.setOpacity(1.0);
   p.drawRoundedRect(statusBarRect, 30, 30);
@@ -2104,7 +2104,7 @@ void AnnotatedCameraWidget::drawStatusBar(QPainter &p) {
   QString roadName = roadNameUI ? QString::fromStdString(paramsMemory.get("RoadName")) : QString();
 
   if (showTorque) {
-    newStatus = "[ Lateral Acceleration: " + QString::number(latAccelFactor) + " ]  |  [ Friction: " + QString::number(frictionCoefficient) + " ]";
+    newStatus = "[ Lateral Acceleration: " + QString::number(latAccelFactor, 'f', 3) + " ]  |  [ Friction: " + QString::number(frictionCoefficient, 'f', 3) + " ]";
   } else {
   // Update status text
     if (alwaysOnLateralActive && !showTorque) {

@@ -279,8 +279,11 @@ typedef struct UIScene {
 
   // Hpilot stuff
   bool show_torque;
-  float lat_accel_filtered;
-  float friction_filtered;
+  bool live_tune;
+  float lat_accel;
+  float friction;
+  float custom_live_lat_accel;
+  float custom_live_friction;
 
   QPolygonF track_adjacent_vertices[6];
   QPolygonF track_edge_vertices;
