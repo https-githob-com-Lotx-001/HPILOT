@@ -23,6 +23,9 @@ class Pc(HardwareBase):
   def soft_reboot(self):
     print("SOFT REBOOT!")
 
+  def soft_reboot(self):
+    print("SOFT REBOOT!")
+
   def uninstall(self):
     print("uninstall")
 

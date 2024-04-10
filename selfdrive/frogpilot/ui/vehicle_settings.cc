@@ -103,8 +103,8 @@ FrogPilotVehiclesPanel::FrogPilotVehiclesPanel(SettingsWindow *parent) : FrogPil
 
   QObject::connect(disableOpenpilotLong, &ToggleControl::toggleFlipped, [=]() {
     if (started) {
-      if (FrogPilotConfirmationDialog::toggle("Reboot required to take effect.", "Reboot Now", this)) {
-        Hardware::reboot();
+      if (FrogPilotConfirmationDialog::toggle(tr("Reboot required to take effect."), tr("Reboot Now"), this)) {
+        Hardware::soft_reboot();
       }
     }
   });
@@ -136,7 +136,7 @@ FrogPilotVehiclesPanel::FrogPilotVehiclesPanel(SettingsWindow *parent) : FrogPil
 
       QObject::connect(static_cast<FrogPilotButtonsParamControl*>(toggle), &FrogPilotButtonsParamControl::buttonClicked, [this]() {
         if (started) {
-          if (FrogPilotConfirmationDialog::toggle("Reboot required to take effect.", "Reboot Now", this)) {
+          if (FrogPilotConfirmationDialog::toggle(tr("Reboot required to take effect."), tr("Reboot Now"), this)) {
             Hardware::soft_reboot();
           }
         }
@@ -163,7 +163,7 @@ FrogPilotVehiclesPanel::FrogPilotVehiclesPanel(SettingsWindow *parent) : FrogPil
   for (const std::string &key : rebootKeys) {
     QObject::connect(toggles[key], &ToggleControl::toggleFlipped, [this]() {
       if (started) {
-        if (FrogPilotConfirmationDialog::toggle("Reboot required to take effect.", "Reboot Now", this)) {
+        if (FrogPilotConfirmationDialog::toggle(tr("Reboot required to take effect."), tr("Reboot Now"), this)) {
           Hardware::soft_reboot();
         }
       }

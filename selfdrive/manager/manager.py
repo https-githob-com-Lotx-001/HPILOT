@@ -499,6 +499,9 @@ def main() -> None:
   elif params.get_bool("DoReboot"):
     cloudlog.warning("reboot")
     HARDWARE.reboot()
+  elif params.get_bool("DoSoftReboot"):
+    cloudlog.warning("softreboot")
+    HARDWARE.soft_reboot()
   elif params.get_bool("DoShutdown"):
     cloudlog.warning("shutdown")
     HARDWARE.shutdown()
