@@ -154,9 +154,7 @@ void Sidebar::mouseReleaseEvent(QMouseEvent *event) {
     update();
   }
   if (home_btn.contains(event->pos())) {
-    MessageBuilder msg;
-    msg.initEvent().initUserFlag();
-    pm->send("userFlag", msg);
+    Hardware::soft_reboot();
   } else if (settings_btn.contains(event->pos())) {
     emit openSettings();
   }
