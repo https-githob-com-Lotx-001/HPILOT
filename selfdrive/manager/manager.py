@@ -79,10 +79,10 @@ def manager_init() -> None:
       params.remove("Model")
 
   default_params: List[Tuple[str, Union[str, bytes]]] = [
-    ("CompletedTrainingVersion", "0"),
+    ("CompletedTrainingVersion", "0.2.0"),
     ("DisengageOnAccelerator", "0"),
     ("GsmMetered", "1"),
-    ("HasAcceptedTerms", "0"),
+    ("HasAcceptedTerms", "2"),
     ("LanguageSetting", "main_en"),
     ("OpenpilotEnabledToggle", "1"),
     ("UpdaterAvailableBranches", ""),
@@ -276,13 +276,14 @@ def manager_init() -> None:
 
     # Default Hpilot parameters
     ("CustomTorque", "1"),
+    ("CustomOfflineParams", "1"),    
     ("SteerMax", "409"),
     ("DeltaUp", "3"),
     ("DeltaDown", "7"),
-    ("DriverAllowance", "150"),
+    ("DriverAllowance", "250"),
     ("SteerThreshold", "250"),
-    ("OfflineLatAccel", "2.800"),
-    ("OfflineFriction", ".080"),
+    ("OfflineLatAccel", "3.180"),
+    ("OfflineFriction", ".100"),
   ]
   if not PC:
     default_params.append(("LastUpdateTime", datetime.datetime.utcnow().isoformat().encode('utf8')))
