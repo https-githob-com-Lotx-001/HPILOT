@@ -284,6 +284,17 @@ static void update_state(UIState *s) {
                                  sm.rcv_frame("liveCalibration") > scene.started_frame &&
                                  sm.rcv_frame("modelV2") > scene.started_frame &&
                                  sm.rcv_frame("uiPlan") > scene.started_frame);
+
+  if (sm.updated("liveTorqueParameters")) {
+    if (!scene.live_tune) {
+      auto torque_params = sm["liveTorqueParameters"].getLiveTorqueParameters();
+      scene.lat_accel = torque_params.getLatAccelFactorFiltered();
+      scene.friction = torque_params.getFrictionCoefficientFiltered();
+    } else {
+      scene.lat_accel = scene.custom_live_lat_accel;
+      scene.friction = scene.custom_live_friction;
+    }
+  }
 }
 
 void ui_update_params(UIState *s) {
@@ -376,6 +387,12 @@ void ui_update_frogpilot_params(UIState *s) {
   scene.show_slc_offset = scene.speed_limit_controller && params.getBool("ShowSLCOffset");
   scene.show_slc_offset_ui = scene.speed_limit_controller && params.getBool("ShowSLCOffsetUI");
   scene.use_vienna_slc_sign = scene.speed_limit_controller && params.getBool("UseVienna");
+
+  // Hpilot variables
+  scene.show_torque = params.getBool("ShowTorqueParams");
+  scene.live_tune = params.getBool("CustomLiveParams");
+  scene.custom_live_lat_accel = params.getFloat("LiveLatAccel");
+  scene.custom_live_friction = params.getFloat("LiveFriction");
 }
 
 void UIState::updateStatus() {
