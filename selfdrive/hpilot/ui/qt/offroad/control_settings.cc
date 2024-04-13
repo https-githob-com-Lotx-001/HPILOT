@@ -241,7 +241,7 @@ HpilotControlsPanel::HpilotControlsPanel(SettingsWindow *parent) : HpilotListWid
                                                                                  tr("Set the 'Aggressive' personality' following distance. "
                                                                                     "Represents seconds to follow behind the lead vehicle.\n\nStock: 1.25 seconds."),
                                                                                     "../hpilot/assets/other_images/aggressive.png",
-                                                                                    1, 5, std::map<int, QString>(), this, false, tr(" sec"), 1, 0.01);
+                                                                                    0.10, 5, std::map<int, QString>(), this, false, tr(" sec"), 1, 0.01);
       HpilotParamValueControl *aggressiveJerk = new HpilotParamValueControl("AggressiveJerk", tr("Jerk"),
                                                                                tr("Adjust brake/gas pedal responsiveness for the 'Aggressive' personality. "
                                                                                   "Higher jerk value = Less likely to use the gas/brake.\nLower jerk value = More likely.\n\nStock: 0.5."),
