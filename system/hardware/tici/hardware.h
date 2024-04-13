@@ -51,20 +51,14 @@ public:
 
   static void reboot() { std::system("sudo reboot"); }
   static void soft_reboot() {
-    const std::vector<std::string> commands = {
-      "rm -f /tmp/safe_staging_overlay.lock",
-      "tmux new -s commatmp -d '/data/continue.sh'",
-      "tmux kill-session -t comma",
-      "tmux rename comma"
+    const char* commands[] = {
+        "rm -f /tmp/safe_staging_overlay.lock",
+        "tmux new -s commatmp -d '/data/continue.sh'",
+        "tmux kill-session -t comma",
+        "tmux rename-session -t commatmp comma"
     };
-    for (const auto& cmd : commands) {
-      int result;
-      do {
-        result = std::system(cmd.c_str());
-      } while (result != 0);
-      if (result != 0) {
-        reboot();
-      }
+    for (int i = 0; i < 4; ++i) {
+        std::system(commands[i]);
     }
   }
   static void poweroff() { std::system("sudo poweroff"); }
