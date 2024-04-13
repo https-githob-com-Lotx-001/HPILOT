@@ -1056,12 +1056,13 @@ void AnnotatedCameraWidget::drawLead(QPainter &painter, const cereal::ModelDataV
   float g_xo = sz / 5;
   float g_yo = sz / 10;
 
-  QPointF glow[] = {{x + (sz * 1.35) + g_xo, y + sz + g_yo}, {x, y - g_yo}, {x - (sz * 1.35) - g_xo, y + sz + g_yo}};
+  float homebase_h = 12;
+  QPointF glow[] = {{x + (sz * 1.35) + g_xo, y + sz + g_yo + homebase_h},{x + (sz * 1.35) + g_xo, y + sz + g_yo}, {x, y - g_yo}, {x - (sz * 1.35) - g_xo, y + sz + g_yo},{x - (sz * 1.35) - g_xo, y + sz + g_yo + homebase_h}, {x, y + sz + homebase_h + g_yo + 10}};
   painter.setBrush(QColor(218, 202, 37, 255));
   painter.drawPolygon(glow, std::size(glow));
 
   // chevron
-  QPointF chevron[] = {{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz}};
+  QPointF chevron[] = {{x + (sz * 1.25), y + sz + homebase_h},{x + (sz * 1.25), y + sz}, {x, y}, {x - (sz * 1.25), y + sz},{x - (sz * 1.25), y + sz + homebase_h}, {x, y + sz + homebase_h - 7}};
   if (currentHolidayTheme != 0) {
     painter.setBrush(std::get<2>(holidayThemeConfiguration[currentHolidayTheme]).begin()->second);
   } else if (customColors != 0) {
@@ -1321,6 +1322,7 @@ void AnnotatedCameraWidget::paintEvent(QPaintEvent *event) {
   const double start_draw_t = millis_since_boot();
   const cereal::ModelDataV2::Reader &model = sm["modelV2"].getModelV2();
   const float v_ego = sm["carState"].getCarState().getVEgo();
+  Params params;
 
   // draw camera frame
   {
@@ -1377,6 +1379,15 @@ void AnnotatedCameraWidget::paintEvent(QPaintEvent *event) {
 
     if (s->scene.longitudinal_control && sm.rcv_frame("modelV2") > s->scene.started_frame) {
       update_leads(s, model);
+
+      // Lead car lockon by programanichiro
+      const auto leads = model.getLeadsV3();
+      size_t leads_num = leads.size();
+      for(size_t i=0; i<leads_num && i < LeadcarLockon_MAX; i++){
+        if(params.getBool("LeadLockon") && (leads[i].getProb() > .2)){
+          drawLockon(painter, leads[i], s->scene.lead_vertices[i] , i);
+        }
+      }
       float prev_drel = -1;
       for (int i = 0; i < model.getLeadsV3().size() && i < 2; i++) {
         const auto &lead = model.getLeadsV3()[i];
