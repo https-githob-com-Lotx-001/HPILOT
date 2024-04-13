@@ -553,6 +553,8 @@ DevicePanel::DevicePanel(SettingsWindow *parent) : ListWidget(parent) {
   }
 
   setStyleSheet(R"(
+    #softreboot_btn { height: 120px; border-radius: 15px; background-color: #e2e22c; }
+    #softreboot_btn:pressed { background-color: #ffe224; }
     #reboot_btn { height: 120px; border-radius: 15px; background-color: #393939; }
     #reboot_btn:pressed { background-color: #4a4a4a; }
     #poweroff_btn { height: 120px; border-radius: 15px; background-color: #E22C2C; }
@@ -595,6 +597,18 @@ void DevicePanel::reboot() {
     }
   } else {
     ConfirmationDialog::alert(tr("Disengage to Reboot"), this);
+  }
+}
+
+void DevicePanel::softreboot() {
+  if (!uiState()->engaged()) {
+    if (ConfirmationDialog::confirm(tr("Are you sure you want to soft reboot?"), tr("Soft Reboot"), this)) {
+      if (!uiState()->engaged()) {
+        params.putBool("DoSoftReboot", true);
+      }
+    }
+  } else {
+    ConfirmationDialog::alert(tr("Disengage to Soft Reboot"), this);
   }
 }
 
