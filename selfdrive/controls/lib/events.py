@@ -20,7 +20,7 @@ AlertStatus = log.ControlsState.AlertStatus
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 AudibleAlert = car.CarControl.HUDControl.AudibleAlert
 EventName = car.CarEvent.EventName
-
+params = Params()
 
 # Alert priorities
 class Priority(IntEnum):
