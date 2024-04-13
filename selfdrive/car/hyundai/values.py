@@ -8,9 +8,11 @@ from openpilot.common.conversions import Conversions as CV
 from openpilot.selfdrive.car import CarSpecs, DbcDict, PlatformConfig, Platforms, dbc_dict
 from openpilot.selfdrive.car.docs_definitions import CarFootnote, CarHarness, CarDocs, CarParts, Column
 from openpilot.selfdrive.car.fw_query_definitions import FwQueryConfig, Request, p16
+from openpilot.common.params import Params
 
 Ecu = car.CarParams.Ecu
-
+params = Params()
+custom_torque = params.get_bool("CustomTorque")
 
 class CarControllerParams:
   ACCEL_MIN = -3.5 # m/s
@@ -27,12 +29,20 @@ class CarControllerParams:
     self.STEER_STEP = 1  # 100 Hz
 
     if CP.carFingerprint in CANFD_CAR:
-      self.STEER_MAX = 270
-      self.STEER_DRIVER_ALLOWANCE = 250
-      self.STEER_DRIVER_MULTIPLIER = 2
-      self.STEER_THRESHOLD = 250
-      self.STEER_DELTA_UP = 2
-      self.STEER_DELTA_DOWN = 3
+      if custom_torque:
+        self.STEER_MAX = params.get_int("SteerMax")
+        self.STEER_DRIVER_ALLOWANCE = params.get_int("DriverAllowance")
+        self.STEER_DRIVER_MULTIPLIER = 2
+        self.STEER_THRESHOLD = params.get_int("SteerThreshold")
+        self.STEER_DELTA_UP = params.get_int("DeltaUp")
+        self.STEER_DELTA_DOWN = params.get_int("DeltaDown")
+      else:
+        self.STEER_MAX = 270
+        self.STEER_DRIVER_ALLOWANCE = 250
+        self.STEER_DRIVER_MULTIPLIER = 2
+        self.STEER_THRESHOLD = 250
+        self.STEER_DELTA_UP = 2
+        self.STEER_DELTA_DOWN = 3
 
     # To determine the limit for your car, find the maximum value that the stock LKAS will request.
     # If the max stock LKAS request is <384, add your car to this list.
