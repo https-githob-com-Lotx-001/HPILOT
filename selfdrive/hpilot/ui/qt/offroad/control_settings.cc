@@ -1060,6 +1060,7 @@ void HpilotControlsPanel::hideToggles() {
                       deviceManagementKeys.find(key.c_str()) != deviceManagementKeys.end() ||
                       laneChangeKeys.find(key.c_str()) != laneChangeKeys.end() ||
                       lateralTuneKeys.find(key.c_str()) != lateralTuneKeys.end() ||
+                      liveTuneKeys.find(key.c_str()) != liveTuneKeys.end() ||
                       longitudinalTuneKeys.find(key.c_str()) != longitudinalTuneKeys.end() ||
                       mtscKeys.find(key.c_str()) != mtscKeys.end() ||
                       qolKeys.find(key.c_str()) != qolKeys.end() ||

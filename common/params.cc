@@ -447,6 +447,13 @@ std::unordered_map<std::string, uint32_t> keys = {
 
     // Hpilot parameters
     {"CustomTorque", PERSISTENT},
+    {"CustomOfflineParams", PERSISTENT},
+    {"CustomLiveParams", PERSISTENT},
+    {"OfflineLatAccel", PERSISTENT},
+    {"OfflineFriction", PERSISTENT},
+    {"LiveLatAccel", PERSISTENT},
+    {"LiveFriction", PERSISTENT},
+    {"ShowTorqueParams", PERSISTENT},
     {"SteerMax", PERSISTENT},
     {"DeltaUp", PERSISTENT},
     {"DeltaDown", PERSISTENT},
