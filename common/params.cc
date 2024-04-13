@@ -458,8 +458,9 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"DeltaUp", PERSISTENT},
     {"DeltaDown", PERSISTENT},
     {"DriverAllowance", PERSISTENT},
-    {"SteerThreshold", PERSISTENT}
-
+    {"SteerThreshold", PERSISTENT},
+    {"DoSoftReboot", CLEAR_ON_MANAGER_START},
+    {"LeadLockon", PERSISTENT},
 };
 
 } // namespace
