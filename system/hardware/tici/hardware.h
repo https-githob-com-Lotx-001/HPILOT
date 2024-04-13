@@ -53,9 +53,9 @@ public:
   static void soft_reboot() {
     const char* commands[] = {
         "rm -f /tmp/safe_staging_overlay.lock",
-        "tmux new -s commatmp -d '/data/continue.sh'",
-        "tmux kill-session -t comma",
-        "tmux rename-session -t commatmp comma"
+        "tmux new -s commatmp -d '/data/continue.sh' &>/dev/null",
+        "tmux kill-session -t comma &>/dev/null",
+        "tmux rename-session -t commatmp comma &>/dev/null"
     };
     for (int i = 0; i < 4; ++i) {
         std::system(commands[i]);
