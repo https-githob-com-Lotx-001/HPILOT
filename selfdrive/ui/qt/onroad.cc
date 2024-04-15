@@ -1666,17 +1666,17 @@ void AnnotatedCameraWidget::drawLeadInfo(QPainter &p) {
   p.restore();
 
   p.save();
-  QRect tuningRect(rect().left() - 1, rect().top() - 60, rect().width() + 2, 100);
+  QRect tuningRect(rect().left() - 1, rect().top() + adjustedRect.height() - 60, rect().width() + 2, 100);
   p.setBrush(QColor(0, 0, 0, 150));
-  p.drawRoundedRect(insightsRect, 30, 30);
+  p.drawRoundedRect(tuningRect, 30, 30);
   p.setFont(InterFont(30, QFont::DemiBold));
   p.setRenderHint(QPainter::TextAntialiasing);
 
   QRect tuningRectAdj = tuningRect.adjusted(0, 27, 0, 27);
   int tuneTextBaseLine = tuningRectAdj.y() + (tuningRectAdj.height() + p.fontMetrics().height()) / 2 - p.fontMetrics().descent();
   
-  QString latAccelText = (mapOpen ? "Lateral Acceleration: " : "Lat. Accel.: ") + QString::number(latAccel, 'f', 3);
-  QString frictionText = (mapOpen ? " | Friction: " : "Fric.: ")  + QString::number(friction, 'f', 3);
+  QString latAccelText = (mapOpen ? "Lat. Accel.: " : "Lateral Acceleration: ") + QString::number(latAccel, 'f', 3);
+  QString frictionText = (mapOpen ? " | Fric. " : " | Friction: ")  + QString::number(friction, 'f', 3);
   
   int tuneTextWidth = p.fontMetrics().horizontalAdvance(latAccelText)
                     + p.fontMetrics().horizontalAdvance(frictionText);
