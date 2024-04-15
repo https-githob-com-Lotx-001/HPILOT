@@ -1666,16 +1666,16 @@ void AnnotatedCameraWidget::drawLeadInfo(QPainter &p) {
   p.restore();
 
   p.save();
-  int tuningRectWidth = rect().width() - 250;
+  int tuningRectWidth = rect().width() / 2;
   int tuningRectX = rect().left() - 1 + (rect().width() - tuningRectWidth) / 2;
-  QRect tuningRect(tuningRectX, rect().top() + adjustedRect.height() - 60, tuningRectWidth, 50);
+  QRect tuningRect(tuningRectX, rect().top() + adjustedRect.height() - 60, tuningRectWidth, 40);
   p.setBrush(QColor(0, 0, 0, 150));
   p.drawRoundedRect(tuningRect, 30, 30);
   p.setFont(InterFont(30, QFont::DemiBold));
   p.setRenderHint(QPainter::TextAntialiasing);
 
   QRect tuningRectAdj = tuningRect.adjusted(0, 27, 0, 27);
-  int tuneTextBaseLine = tuningRectAdj.y() + (tuningRectAdj.height() + p.fontMetrics().height()) / 2 - p.fontMetrics().descent();
+  int tuneTextBaseLine = tuningRectAdj.y() + ((tuningRectAdj.height() / 2) + p.fontMetrics().height()) / 2 - p.fontMetrics().descent();
   
   QString latAccelText = (mapOpen ? "Lat. Accel.: " : "Lateral Acceleration: ") + QString::number(latAccel, 'f', 3);
   QString frictionText = (mapOpen ? " | Fric. " : " | Friction: ")  + QString::number(friction, 'f', 3);
