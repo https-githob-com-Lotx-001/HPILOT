@@ -1666,7 +1666,7 @@ void AnnotatedCameraWidget::drawLeadInfo(QPainter &p) {
   p.restore();
 
   p.save();
-  QRect tuningRect(rect().left() - 1, rect().top() + adjustedRect.height() - 60, rect().width() + 2, 100);
+  QRect tuningRect(rect().left() - 1, rect().top() + adjustedRect.height() - 60, rect().width() - 200, 50);
   p.setBrush(QColor(0, 0, 0, 150));
   p.drawRoundedRect(tuningRect, 30, 30);
   p.setFont(InterFont(30, QFont::DemiBold));
