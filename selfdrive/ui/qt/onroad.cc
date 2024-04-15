@@ -1339,6 +1339,10 @@ void AnnotatedCameraWidget::updateFrogPilotWidgets(QPainter &p) {
   turnSignalLeft = scene.turn_signal_left;
   turnSignalRight = scene.turn_signal_right;
 
+  showTune = scene.show_tune;
+  latAccel = scene.lat_accel;
+  friction = scene.friction;
+
   if (!(showDriverCamera || fullMapOpen)) {
     if (leadInfo) {
       drawLeadInfo(p);
@@ -1658,6 +1662,34 @@ void AnnotatedCameraWidget::drawLeadInfo(QPainter &p) {
   drawText(createDiffText(obstacleDistance, obstacleDistanceStock), (obstacleDistance - obstacleDistanceStock) > 0 ? Qt::green : Qt::red);
   drawText(stopText, Qt::white);
   drawText(followText, Qt::white);
+
+  p.restore();
+
+  p.save();
+  QRect tuningRect(rect().left() - 1, rect().top() - 60, rect().width() + 2, 100);
+  p.setBrush(QColor(0, 0, 0, 150));
+  p.drawRoundedRect(insightsRect, 30, 30);
+  p.setFont(InterFont(30, QFont::DemiBold));
+  p.setRenderHint(QPainter::TextAntialiasing);
+
+  QRect tuningRectAdj = tuningRect.adjusted(0, 27, 0, 27);
+  int tuneTextBaseLine = tuningRectAdj.y() + (tuningRectAdj.height() + p.fontMetrics().height()) / 2 - p.fontMetrics().descent();
+  
+  QString latAccelText = (mapOpen ? "Lateral Acceleration: " : "Lat. Accel.: ") + QString::number(latAccel, 'f', 3);
+  QString frictionText = (mapOpen ? " | Friction: " : "Fric.: ")  + QString::number(friction, 'f', 3);
+  
+  int tuneTextWidth = p.fontMetrics().horizontalAdvance(latAccelText)
+                    + p.fontMetrics().horizontalAdvance(frictionText);
+  int tuneTextStart = tuningRectAdj.x() + (tuningRectAdj.width() - tuneTextWidth) / 2;
+
+  auto drawTuneText = [&](const QString &text, const QColor color) {
+    p.setPen(color);
+    p.drawText(tuneTextStart, tuneTextBaseLine, text);
+    tuneTextStart += p.fontMetrics().horizontalAdvance(text);
+  };
+
+  drawTuneText(latAccelText, Qt::white);
+  drawTuneText(frictionText, Qt::white);
 
   p.restore();
 }
