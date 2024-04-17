@@ -286,6 +286,8 @@ def manager_init(hpilot_functions) -> None:
     ("DeltaDown", "7"),
     ("DriverAllowance", "250"),
     ("SteerThreshold", "250"),
+    ("OfflineLatAccel", "3.200"),
+    ("OfflineFriction", ".100"),
   ]
   if not PC:
     default_params.append(("LastUpdateTime", datetime.datetime.utcnow().isoformat().encode('utf8')))
@@ -470,7 +472,6 @@ def main() -> None:
   elif params.get_bool("DoShutdown"):
     cloudlog.warning("shutdown")
     HARDWARE.shutdown()
-
 
 if __name__ == "__main__":
   unblock_stdout()
