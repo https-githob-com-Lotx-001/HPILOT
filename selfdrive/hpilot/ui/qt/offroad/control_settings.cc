@@ -1067,6 +1067,7 @@ void HpilotControlsPanel::hideToggles() {
     bool subToggles = aolKeys.find(key.c_str()) != aolKeys.end() ||
                       conditionalExperimentalKeys.find(key.c_str()) != conditionalExperimentalKeys.end() ||
                       customTorqueKeys.find(key.c_str()) != customTorqueKeys.end() ||
+                      customTuneKeys.find(key.c_str()) != customTuneKeys.end() ||
                       experimentalModeActivationKeys.find(key.c_str()) != experimentalModeActivationKeys.end() ||
                       deviceManagementKeys.find(key.c_str()) != deviceManagementKeys.end() ||
                       laneChangeKeys.find(key.c_str()) != laneChangeKeys.end() ||

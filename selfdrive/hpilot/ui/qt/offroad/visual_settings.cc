@@ -25,6 +25,7 @@ HpilotVisualsPanel::HpilotVisualsPanel(SettingsWindow *parent) : HpilotListWidge
     {"PedalsOnUI", tr("Pedals Being Pressed"), tr("Display the brake and gas pedals on the onroad UI below the steering wheel icon."), ""},
     {"RoadNameUI", tr("Road Name"), tr("Display the current road's name at the bottom of the screen. Sourced from OpenStreetMap."), ""},
     {"WheelIcon", tr("Steering Wheel Icon"), tr("Replace the default steering wheel icon with a custom icon."), ""},
+    {"ShowTorqueParams", tr("Torque Parameters"), tr("Display the lateral acceleration factor and friction coefficient values from the torque controller in the onroad UI."), ""},
 
     {"CustomTheme", tr("Custom Themes"), tr("Enable the ability to use custom themes."), "../hpilot/assets/wheel_images/frog.png"},
     {"CustomColors", tr("Color Theme"), tr("Switch out the standard openpilot color scheme with themed colors.\n\nWant to submit your own color scheme? Post it in the 'feature-request' channel in the Hpilot Discord!"), ""},

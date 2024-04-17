@@ -285,7 +285,24 @@ void OnroadWindow::paintEvent(QPaintEvent *event) {
     int yPos = currentRect.bottom() - 5;
 
     p.drawText(xPos, yPos, fpsDisplayString);
+    update();
+  }
 
+  if (scene.show_torque) {
+    QString tuneDisplayString = QString("Lateral Acceleration: %1 | Friction: %2")
+      .arg(scene.lat_accel, 0, 'f', 3)
+      .arg(scene.friction, 0, 'f', 3);
+
+    p.setFont(InterFont(30, QFont::DemiBold));
+    p.setRenderHint(QPainter::TextAntialiasing);
+    p.setPen(Qt::white);
+
+    QRect currentRect = rect();
+    int tuneWidth = p.fontMetrics().horizontalAdvance(tuneDisplayString);
+    int tuneX = (currentRect.width() - tuneWidth) / 2;
+    int tuneY = currentRect.top() + 27;
+
+    p.drawText(tuneX, tuneY, tuneDisplayString);
     update();
   }
 }
@@ -1824,9 +1841,10 @@ void AnnotatedCameraWidget::drawStatusBar(QPainter &p) {
     lastShownStatus = newStatus;
     timer.restart();
   } else if (displayStatusText && timer.hasExpired(textDuration + fadeDuration)) {
-    displayStatusText = false;
+      displayStatusText = false;
   }
 
+  // Configure the text
   p.setFont(InterFont(40, QFont::Bold));
   p.setPen(Qt::white);
   p.setRenderHint(QPainter::TextAntialiasing);
