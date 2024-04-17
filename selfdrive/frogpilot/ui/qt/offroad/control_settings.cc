@@ -312,7 +312,7 @@ FrogPilotControlsPanel::FrogPilotControlsPanel(SettingsWindow *parent) : FrogPil
     } else if (param == "CustomOfflineParams") {
       FrogPilotParamManageControl *customTuneToggle = new FrogPilotParamManageControl(param, title, desc, icon, this);
       QObject::connect(customTuneToggle, &FrogPilotParamManageControl::manageButtonClicked, this, [this]() {
-        parentToggleClicked();
+        openParentToggle();
         for (auto &[key, toggle] : toggles) {
           toggle->setVisible(customTuneKeys.find(key.c_str()) != customTuneKeys.end());
         }
@@ -325,7 +325,7 @@ FrogPilotControlsPanel::FrogPilotControlsPanel(SettingsWindow *parent) : FrogPil
     } else if (param == "CustomLiveParams") {
       FrogPilotParamManageControl *liveTuneToggle = new FrogPilotParamManageControl(param, title, desc, icon, this);
       QObject::connect(liveTuneToggle, &FrogPilotParamManageControl::manageButtonClicked, this, [this]() {
-        parentToggleClicked();
+        openParentToggle();
         for (auto &[key, toggle] : toggles) {
           toggle->setVisible(liveTuneKeys.find(key.c_str()) != liveTuneKeys.end());
         }
@@ -338,7 +338,7 @@ FrogPilotControlsPanel::FrogPilotControlsPanel(SettingsWindow *parent) : FrogPil
     } else if (param == "CustomTorque") {
       FrogPilotParamManageControl *customTorqueToggle = new FrogPilotParamManageControl(param, title, desc, icon, this);
       QObject::connect(customTorqueToggle, &FrogPilotParamManageControl::manageButtonClicked, this, [this]() {
-        parentToggleClicked();
+        openParentToggle();
         for (auto &[key, toggle] : toggles) {
           toggle->setVisible(customTorqueKeys.find(key.c_str()) != customTorqueKeys.end());
         }
@@ -1056,6 +1056,7 @@ void FrogPilotControlsPanel::hideToggles() {
     bool subToggles = aolKeys.find(key.c_str()) != aolKeys.end() ||
                       conditionalExperimentalKeys.find(key.c_str()) != conditionalExperimentalKeys.end() ||
                       customTorqueKeys.find(key.c_str()) != customTorqueKeys.end() ||
+                      customTuneKeys.find(key.c_str()) != customTuneKeys.end() ||
                       experimentalModeActivationKeys.find(key.c_str()) != experimentalModeActivationKeys.end() ||
                       deviceManagementKeys.find(key.c_str()) != deviceManagementKeys.end() ||
                       laneChangeKeys.find(key.c_str()) != laneChangeKeys.end() ||

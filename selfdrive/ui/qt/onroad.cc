@@ -285,7 +285,24 @@ void OnroadWindow::paintEvent(QPaintEvent *event) {
     int yPos = currentRect.bottom() - 5;
 
     p.drawText(xPos, yPos, fpsDisplayString);
+    update();
+  }
 
+  if (scene.show_torque) {
+    QString tuneDisplayString = QString("Lateral Acceleration: %1 | Friction: %2")
+      .arg(scene.lat_accel, 0, 'f', 3)
+      .arg(scene.friction, 0, 'f', 3);
+
+    p.setFont(InterFont(30, QFont::DemiBold));
+    p.setRenderHint(QPainter::TextAntialiasing);
+    p.setPen(Qt::white);
+
+    QRect currentRect = rect();
+    int tuneWidth = p.fontMetrics().horizontalAdvance(tuneDisplayString);
+    int tuneX = (currentRect.width() - tuneWidth) / 2;
+    int tuneY = currentRect.top() + 27;
+
+    p.drawText(tuneX, tuneY, tuneDisplayString);
     update();
   }
 }
@@ -1548,13 +1565,6 @@ void AnnotatedCameraWidget::updateFrogPilotWidgets() {
   turnSignalLeft = scene.turn_signal_left;
   turnSignalRight = scene.turn_signal_right;
 
-  showTorque = scene.show_torque;
-  latAccelFactor = scene.lat_accel;
-  frictionCoefficient = scene.friction;
-
-  latAccelFactor = scene.lat_accel;
-  frictionCoefficient = scene.friction;
-
   if (currentHolidayTheme != scene.current_holiday_theme || customSignals != scene.custom_signals) {
     currentHolidayTheme = scene.current_holiday_theme;
     customSignals = scene.custom_signals;
@@ -2047,14 +2057,11 @@ void AnnotatedCameraWidget::drawStatusBar(QPainter &p) {
 
   QString roadName = roadNameUI ? QString::fromStdString(paramsMemory.get("RoadName")) : QString();
 
-  if (showTorque) {
-    newStatus = "[ Lateral Acceleration: " + QString::number(latAccelFactor, 'f', 3) + " ]  |  [ Friction: " + QString::number(frictionCoefficient, 'f', 3) + " ]";
-  } else {
-    if (alwaysOnLateralActive && !showTorque && showAlwaysOnLateralStatusBar) {
-      newStatus = tr("Always On Lateral active") + (mapOpen ? "" : tr(". Press the \"Cruise Control\" button to disable"));
-    } else if (showConditionalExperimental && !showTorqueStatusBar) {
-      newStatus = conditionalStatusMap[status != STATUS_DISENGAGED ? conditionalStatus : 0];
-    }
+  if (alwaysOnLateralActive) {
+    newStatus = QString("Always On Lateral active") + (mapOpen ? "" : ". Press the \"Cruise Control\" button to disable");
+  } else if (conditionalStatus) {
+    newStatus = conditionalStatusMap[status != STATUS_DISENGAGED ? conditionalStatus : 0];
+  }
 
   QString distanceSuffix = tr(". Long press the \"distance\" button to revert");
   QString lkasSuffix = tr(". Double press the \"LKAS\" button to revert");
@@ -2075,9 +2082,10 @@ void AnnotatedCameraWidget::drawStatusBar(QPainter &p) {
     lastShownStatus = newStatus;
     timer.restart();
   } else if (displayStatusText && timer.hasExpired(textDuration + fadeDuration)) {
-    displayStatusText = false;
+      displayStatusText = false;
   }
 
+  // Configure the text
   p.setFont(InterFont(40, QFont::Bold));
   p.setPen(Qt::white);
   p.setRenderHint(QPainter::TextAntialiasing);
