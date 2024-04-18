@@ -69,7 +69,7 @@ Spinner::Spinner(QWidget *parent) : QWidget(parent) {
   progress_bar->setTextVisible(false);
   progress_bar->setVisible(false);
   progress_bar->setFixedHeight(20);
-  main_layout->addWidget(progress_bar, 1, 0, Qt::AlignHCenter);
+  main_layout->addWidget(progress_bar, 2, 0, Qt::AlignHCenter);
 
   setStyleSheet(R"(
     Spinner {
@@ -88,7 +88,7 @@ Spinner::Spinner(QWidget *parent) : QWidget(parent) {
     }
     QProgressBar::chunk {
       border-radius: 10px;
-      background-color: rgba(23, 134, 68, 255);
+      background-color: rgba(163, 98, 0, 255);
     }
   )");
 
