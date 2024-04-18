@@ -208,7 +208,7 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"UpdaterLastFetchTime", PERSISTENT},
     {"Version", PERSISTENT},
 
-    // FrogPilot parameters
+    // Hpilot parameters
     {"AccelerationPath", PERSISTENT},
     {"AccelerationProfile", PERSISTENT},
     {"AdjacentPath", PERSISTENT},
@@ -286,10 +286,10 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"ForceFingerprint", PERSISTENT},
     {"ForceMPHDashboard", PERSISTENT},
     {"FPSCounter", PERSISTENT},
-    {"FrogPilotDrives", PERSISTENT},
-    {"FrogPilotKilometers", PERSISTENT},
-    {"FrogPilotMinutes", PERSISTENT},
-    {"FrogPilotTogglesUpdated", PERSISTENT},
+    {"HpilotDrives", PERSISTENT},
+    {"HpilotKilometers", PERSISTENT},
+    {"HpilotMinutes", PERSISTENT},
+    {"HpilotTogglesUpdated", PERSISTENT},
     {"FrogsGoMoo", PERSISTENT},
     {"FrogsGoMooTune", PERSISTENT},
     {"FullMap", PERSISTENT},

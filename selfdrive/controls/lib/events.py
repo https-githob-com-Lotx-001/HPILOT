@@ -231,7 +231,7 @@ def startup_master_alert(CP: car.CarParams, CS: car.CarState, sm: messaging.SubM
   branch = get_short_branch()  # Ensure get_short_branch is cached to avoid lags on startup
   if "REPLAY" in os.environ:
     branch = "replay"
-  return StartupAlert("Current branch:", branch, alert_status=AlertStatus.frogpilot)
+  return StartupAlert("Current branch:", branch, alert_status=AlertStatus.hpilot)
 
 def below_engage_speed_alert(CP: car.CarParams, CS: car.CarState, sm: messaging.SubMaster, metric: bool, soft_disable_time: int) -> Alert:
   return NoEntryAlert(f"Drive above {get_display_speed(CP.minEnableSpeed, metric)} to engage")
@@ -273,7 +273,7 @@ def torque_nn_load_alert(CP: car.CarParams, CS: car.CarState, sm: messaging.SubM
     return Alert(
       "NNFF Torque Controller loaded",
       model_name,
-      AlertStatus.frogpilot, AlertSize.mid,
+      AlertStatus.hpilot, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.engage, 5.0)
 
 # *** debug alerts ***
@@ -350,7 +350,7 @@ def joystick_alert(CP: car.CarParams, CS: car.CarState, sm: messaging.SubMaster,
   return NormalPermanentAlert("Joystick Mode", vals)
 
 
-# FrogPilot alerts
+# Hpilot alerts
 def holiday_alert(CP: car.CarParams, CS: car.CarState, sm: messaging.SubMaster, metric: bool, soft_disable_time: int) -> Alert:
   holiday_messages = {
     1: ("Happy April Fool's Day! 🤡", "aprilFoolsAlert"),
@@ -376,7 +376,7 @@ def holiday_alert(CP: car.CarParams, CS: car.CarState, sm: messaging.SubMaster, 
     Priority.LOWEST, VisualAlert.none, AudibleAlert.none, 5.)
 
 def no_lane_available_alert(CP: car.CarParams, CS: car.CarState, sm: messaging.SubMaster, metric: bool, soft_disable_time: int) -> Alert:
-  lane_width = sm['frogpilotPlan'].laneWidthLeft if CS.leftBlinker else sm['frogpilotPlan'].laneWidthRight
+  lane_width = sm['hpilotPlan'].laneWidthLeft if CS.leftBlinker else sm['hpilotPlan'].laneWidthRight
   lane_width_msg = f"{lane_width:.1f} meters" if metric else f"{lane_width * CV.METER_TO_FOOT:.1f} feet"
 
   return Alert(
@@ -1008,7 +1008,7 @@ EVENTS: dict[int, dict[str, Alert | AlertCallbackType]] = {
     ET.NO_ENTRY: NoEntryAlert("Vehicle Sensors Calibrating"),
   },
 
-  # FrogPilot Events
+  # Hpilot Events
   EventName.blockUser: {
     ET.PERMANENT: NormalPermanentAlert("Dashcam mode",
                                        "Please don't use the 'Development' branch!",
@@ -1027,7 +1027,7 @@ EVENTS: dict[int, dict[str, Alert | AlertCallbackType]] = {
     ET.PERMANENT: Alert(
       "Light turned green",
       "",
-      AlertStatus.frogpilot, AlertSize.small,
+      AlertStatus.hpilot, AlertSize.small,
       Priority.MID, VisualAlert.none, AudibleAlert.prompt, 3.),
   },
 
@@ -1047,7 +1047,7 @@ EVENTS: dict[int, dict[str, Alert | AlertCallbackType]] = {
     ET.PERMANENT: Alert(
       "Lead departed",
       "",
-      AlertStatus.frogpilot, AlertSize.small,
+      AlertStatus.hpilot, AlertSize.small,
       Priority.MID, VisualAlert.none, AudibleAlert.prompt, 3.),
   },
 
@@ -1058,7 +1058,7 @@ EVENTS: dict[int, dict[str, Alert | AlertCallbackType]] = {
   EventName.openpilotCrashed: {
     ET.PERMANENT: Alert(
       "openpilot crashed",
-      "Please post the error log in the FrogPilot Discord!",
+      "Please post the error log in the Hpilot Discord!",
       AlertStatus.normal, AlertSize.mid,
       Priority.HIGH, VisualAlert.none, AudibleAlert.none, .1),
   },
@@ -1075,7 +1075,7 @@ EVENTS: dict[int, dict[str, Alert | AlertCallbackType]] = {
     ET.PERMANENT: Alert(
       "Speed Limit Changed",
       "",
-      AlertStatus.frogpilot, AlertSize.small,
+      AlertStatus.hpilot, AlertSize.small,
       Priority.LOW, VisualAlert.none, AudibleAlert.prompt, 3.),
   },
 
@@ -1104,7 +1104,7 @@ EVENTS: dict[int, dict[str, Alert | AlertCallbackType]] = {
     ET.WARNING: Alert(
       "UwU u went a bit fast there!",
       "(⁄ ⁄•⁄ω⁄•⁄ ⁄)",
-      AlertStatus.frogpilot, AlertSize.mid,
+      AlertStatus.hpilot, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.uwu, 4.),
   },
 
@@ -1112,7 +1112,7 @@ EVENTS: dict[int, dict[str, Alert | AlertCallbackType]] = {
     ET.WARNING: Alert(
       "I ain't giving you no tree-fiddy",
       "you damn Loch Ness monsta!",
-      AlertStatus.frogpilot, AlertSize.mid,
+      AlertStatus.hpilot, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.nessie, 4.),
   },
 
@@ -1120,7 +1120,7 @@ EVENTS: dict[int, dict[str, Alert | AlertCallbackType]] = {
     ET.WARNING: Alert(
       "Great Scott!",
       "🚗💨",
-      AlertStatus.frogpilot, AlertSize.mid,
+      AlertStatus.hpilot, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.doc, 4.),
   },
 
@@ -1135,7 +1135,7 @@ EVENTS: dict[int, dict[str, Alert | AlertCallbackType]] = {
   EventName.openpilotCrashedRandomEvents: {
     ET.PERMANENT: Alert(
       "openpilot crashed 💩",
-      "Please post the error log in the FrogPilot Discord!",
+      "Please post the error log in the Hpilot Discord!",
       AlertStatus.normal, AlertSize.mid,
       Priority.HIGHEST, VisualAlert.none, AudibleAlert.fart, 4.),
   },
@@ -1144,7 +1144,7 @@ EVENTS: dict[int, dict[str, Alert | AlertCallbackType]] = {
     ET.PERMANENT: Alert(
       "Lol 69",
       "",
-      AlertStatus.frogpilot, AlertSize.small,
+      AlertStatus.hpilot, AlertSize.small,
       Priority.LOW, VisualAlert.none, AudibleAlert.noice, 2.),
   },
 
@@ -1152,7 +1152,7 @@ EVENTS: dict[int, dict[str, Alert | AlertCallbackType]] = {
     ET.PERMANENT: Alert(
       "Your frog tried to kill me...",
       "👺",
-      AlertStatus.frogpilot, AlertSize.mid,
+      AlertStatus.hpilot, AlertSize.mid,
       Priority.MID, VisualAlert.none, AudibleAlert.angry, 5.),
   },
 }

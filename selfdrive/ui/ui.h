@@ -78,7 +78,7 @@ struct Alert {
 
       // Handle controls timeout
       if (std::ifstream("/data/community/crashes/error.txt")) {
-        alert = {"openpilot crashed", "Please post the error log in the FrogPilot Discord!",
+        alert = {"openpilot crashed", "Please post the error log in the Hpilot Discord!",
                  "controlsWaiting", cereal::ControlsState::AlertSize::MID,
                  cereal::ControlsState::AlertStatus::NORMAL,
                  AudibleAlert::NONE};
@@ -112,7 +112,7 @@ typedef enum UIStatus {
   STATUS_OVERRIDE,
   STATUS_ENGAGED,
 
-  // FrogPilot statuses
+  // Hpilot statuses
   STATUS_ALWAYS_ON_LATERAL_ACTIVE,
   STATUS_TRAFFIC_MODE_ACTIVE,
 
@@ -133,7 +133,7 @@ const QColor bg_colors [] = {
   [STATUS_OVERRIDE] = QColor(0x91, 0x9b, 0x95, 0xf1),
   [STATUS_ENGAGED] = QColor(0x17, 0x86, 0x44, 0xf1),
 
-  // FrogPilot colors
+  // Hpilot colors
   [STATUS_ALWAYS_ON_LATERAL_ACTIVE] = QColor(0x0a, 0xba, 0xb5, 0xf1),
   [STATUS_TRAFFIC_MODE_ACTIVE] = QColor(0xc9, 0x22, 0x31, 0xf1),
 };
@@ -142,7 +142,7 @@ static std::map<cereal::ControlsState::AlertStatus, QColor> alert_colors = {
   {cereal::ControlsState::AlertStatus::NORMAL, QColor(0x15, 0x15, 0x15, 0xf1)},
   {cereal::ControlsState::AlertStatus::USER_PROMPT, QColor(0xDA, 0x6F, 0x25, 0xf1)},
   {cereal::ControlsState::AlertStatus::CRITICAL, QColor(0xC9, 0x22, 0x31, 0xf1)},
-  {cereal::ControlsState::AlertStatus::FROGPILOT, QColor(0x17, 0x86, 0x44, 0xf1)},
+  {cereal::ControlsState::AlertStatus::HPILOT, QColor(0x17, 0x86, 0x44, 0xf1)},
 };
 
 typedef struct UIScene {
@@ -178,7 +178,7 @@ typedef struct UIScene {
   bool world_objects_visible = false;
   uint64_t started_frame;
 
-  // FrogPilot variables
+  // Hpilot variables
   bool acceleration_path;
   bool adjacent_path;
   bool adjacent_path_metrics;
@@ -320,7 +320,7 @@ public:
 
   QTransform car_space_transform;
 
-  // FrogPilot variables
+  // Hpilot variables
   WifiManager *wifi = nullptr;
 
 signals:
@@ -337,7 +337,7 @@ private:
   bool started_prev = false;
   PrimeType prime_type = PrimeType::UNKNOWN;
 
-  // FrogPilot variables
+  // Hpilot variables
   Params paramsMemory{"/dev/shm/params"};
 };
 
@@ -389,5 +389,5 @@ void update_leads(UIState *s, const cereal::RadarState::Reader &radar_state, con
 void update_line_data(const UIState *s, const cereal::XYZTData::Reader &line,
                       float y_off, float z_off, QPolygonF *pvd, int max_idx, bool allow_invert);
 
-// FrogPilot functions
-void ui_update_frogpilot_params(UIState *s);
+// Hpilot functions
+void ui_update_hpilot_params(UIState *s);

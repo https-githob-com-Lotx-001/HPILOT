@@ -16,7 +16,7 @@ GearShifter = car.CarState.GearShifter
 ENABLE_BUTTONS = (Buttons.RES_ACCEL, Buttons.SET_DECEL, Buttons.CANCEL)
 BUTTONS_DICT = {Buttons.RES_ACCEL: ButtonType.accelCruise, Buttons.SET_DECEL: ButtonType.decelCruise,
                 Buttons.GAP_DIST: ButtonType.gapAdjustCruise, Buttons.CANCEL: ButtonType.cancel}
-FrogPilotButtonType = custom.FrogPilotCarState.ButtonEvent.Type
+HpilotButtonType = custom.HpilotCarState.ButtonEvent.Type
 
 
 class CarInterface(CarInterfaceBase):
@@ -158,13 +158,13 @@ class CarInterface(CarInterfaceBase):
     if CP.flags & HyundaiFlags.ENABLE_BLINKERS:
       disable_ecu(logcan, sendcan, bus=CanBus(CP).ECAN, addr=0x7B1, com_cont_req=b'\x28\x83\x01')
 
-  def _update(self, c, frogpilot_variables):
-    ret = self.CS.update(self.cp, self.cp_cam, frogpilot_variables)
+  def _update(self, c, hpilot_variables):
+    ret = self.CS.update(self.cp, self.cp_cam, hpilot_variables)
 
     if self.CS.CP.openpilotLongitudinalControl:
       ret.buttonEvents = [
         *create_button_events(self.CS.cruise_buttons[-1], self.CS.prev_cruise_buttons, BUTTONS_DICT),
-        *create_button_events(self.CS.lkas_enabled, self.CS.lkas_previously_enabled, {1: FrogPilotButtonType.lkas}),
+        *create_button_events(self.CS.lkas_enabled, self.CS.lkas_previously_enabled, {1: HpilotButtonType.lkas}),
       ]
 
     # On some newer model years, the CANCEL button acts as a pause/resume button based on the PCM state
@@ -186,5 +186,5 @@ class CarInterface(CarInterfaceBase):
 
     return ret
 
-  def apply(self, c, now_nanos, frogpilot_variables):
-    return self.CC.update(c, self.CS, now_nanos, frogpilot_variables)
+  def apply(self, c, now_nanos, hpilot_variables):
+    return self.CC.update(c, self.CS, now_nanos, hpilot_variables)

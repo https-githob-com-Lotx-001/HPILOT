@@ -26,7 +26,7 @@ public:
 protected:
   void showEvent(QShowEvent *event) override;
 
-  // FrogPilot widgets
+  // Hpilot widgets
   void hideEvent(QHideEvent *event) override;
 
 signals:
@@ -35,7 +35,7 @@ signals:
   void showDriverView();
   void expandToggleDescription(const QString &param);
 
-  // FrogPilot signals
+  // Hpilot signals
   void closeParentToggle();
   void closeSubParentToggle();
   void updateMetric();
@@ -46,7 +46,7 @@ private:
   QButtonGroup *nav_btns;
   QStackedWidget *panel_widget;
 
-  // FrogPilot variables
+  // Hpilot variables
   bool parentToggleOpen;
   bool subParentToggleOpen;
 
@@ -70,7 +70,7 @@ private slots:
 private:
   Params params;
 
-  // FrogPilot variables
+  // Hpilot variables
   Params paramsMemory{"/dev/shm/params"};
 };
 
@@ -81,7 +81,7 @@ public:
   void showEvent(QShowEvent *event) override;
 
 signals:
-  // FrogPilot signals
+  // Hpilot signals
   void updateMetric();
 
 public slots:
@@ -119,7 +119,7 @@ private:
   Params params;
   ParamWatcher *fs_watch;
 
-  // FrogPilot variables
+  // Hpilot variables
   Params paramsMemory{"/dev/shm/params"};
   UIScene &scene;
 };

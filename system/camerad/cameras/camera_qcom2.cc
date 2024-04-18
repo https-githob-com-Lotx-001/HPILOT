@@ -933,7 +933,7 @@ void process_road_camera(MultiCameraState *s, CameraState *c, int cnt) {
 }
 
 void cameras_run(MultiCameraState *s) {
-  // FrogPilot variables
+  // Hpilot variables
   Params paramsMemory{"/dev/shm/params"};
   const std::chrono::seconds fpsUpdateInterval(1);
   std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();

@@ -47,7 +47,7 @@ class DesireHelper:
     self.prev_one_blinker = False
     self.desire = log.Desire.none
 
-    # FrogPilot variables
+    # Hpilot variables
     self.params = Params()
     self.params_memory = Params("/dev/shm/params")
 
@@ -58,9 +58,9 @@ class DesireHelper:
 
     self.lane_change_wait_timer = 0
 
-    self.update_frogpilot_params()
+    self.update_hpilot_params()
 
-  def update(self, carstate, lateral_active, lane_change_prob, frogpilotPlan):
+  def update(self, carstate, lateral_active, lane_change_prob, hpilotPlan):
     v_ego = carstate.vEgo
     one_blinker = carstate.leftBlinker != carstate.rightBlinker
     below_lane_change_speed = v_ego < LANE_CHANGE_SPEED_MIN
@@ -68,7 +68,7 @@ class DesireHelper:
     if not (self.lane_detection and one_blinker) or below_lane_change_speed:
       lane_available = True
     else:
-      desired_lane = frogpilotPlan.laneWidthLeft if carstate.leftBlinker else frogpilotPlan.laneWidthRight
+      desired_lane = hpilotPlan.laneWidthLeft if carstate.leftBlinker else hpilotPlan.laneWidthRight
       lane_available = desired_lane >= self.lane_detection_width
 
     if not lateral_active or self.lane_change_timer > LANE_CHANGE_TIME_MAX:
@@ -160,10 +160,10 @@ class DesireHelper:
       elif self.desire in (log.Desire.keepLeft, log.Desire.keepRight):
         self.desire = log.Desire.none
 
-    if self.params_memory.get_bool("FrogPilotTogglesUpdated"):
-      self.update_frogpilot_params()
+    if self.params_memory.get_bool("HpilotTogglesUpdated"):
+      self.update_hpilot_params()
 
-  def update_frogpilot_params(self):
+  def update_hpilot_params(self):
     is_metric = self.params.get_bool("IsMetric")
 
     lateral_tune = self.params.get_bool("LateralTune")

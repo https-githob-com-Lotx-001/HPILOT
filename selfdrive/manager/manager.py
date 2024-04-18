@@ -24,11 +24,11 @@ from openpilot.system.version import is_dirty, get_commit, get_version, get_orig
                            get_normalized_origin, terms_version, training_version, \
                            is_tested_branch, is_release_branch, get_commit_date
 
-from openpilot.selfdrive.frogpilot.controls.lib.frogpilot_functions import FrogPilotFunctions
-from openpilot.selfdrive.frogpilot.controls.lib.model_manager import DEFAULT_MODEL, DEFAULT_MODEL_NAME, delete_deprecated_models
+from openpilot.selfdrive.hpilot.controls.lib.hpilot_functions import HpilotFunctions
+from openpilot.selfdrive.hpilot.controls.lib.model_manager import DEFAULT_MODEL, DEFAULT_MODEL_NAME, delete_deprecated_models
 
 
-def frogpilot_boot_functions(frogpilot_functions):
+def hpilot_boot_functions(hpilot_functions):
   try:
     delete_deprecated_models()
 
@@ -37,13 +37,13 @@ def frogpilot_boot_functions(frogpilot_functions):
       time.sleep(1)
 
     try:
-      frogpilot_functions.backup_frogpilot()
+      hpilot_functions.backup_hpilot()
     except subprocess.CalledProcessError as e:
-      print(f"Failed to backup FrogPilot. Error: {e}")
+      print(f"Failed to backup Hpilot. Error: {e}")
       return
 
     try:
-      frogpilot_functions.backup_toggles()
+      hpilot_functions.backup_toggles()
     except subprocess.CalledProcessError as e:
       print(f"Failed to backup toggles. Error: {e}")
       return
@@ -51,9 +51,9 @@ def frogpilot_boot_functions(frogpilot_functions):
   except Exception as e:
     print(f"An unexpected error occurred: {e}")
 
-def manager_init(frogpilot_functions) -> None:
-  frogpilot_boot = threading.Thread(target=frogpilot_boot_functions, args=(frogpilot_functions,))
-  frogpilot_boot.start()
+def manager_init(hpilot_functions) -> None:
+  hpilot_boot = threading.Thread(target=hpilot_boot_functions, args=(hpilot_functions,))
+  hpilot_boot.start()
 
   save_bootlog()
 
@@ -81,7 +81,7 @@ def manager_init(frogpilot_functions) -> None:
     ("RecordFront", "0"),
     ("LongitudinalPersonality", str(log.LongitudinalPersonality.standard)),
 
-    # Default FrogPilot parameters
+    # Default Hpilot parameters
     ("AccelerationPath", "1"),
     ("AccelerationProfile", "2"),
     ("AdjacentPath", "0"),
@@ -147,9 +147,9 @@ def manager_init(frogpilot_functions) -> None:
     ("ForceFingerprint", "0"),
     ("ForceMPHDashboard", "0"),
     ("FPSCounter", "0"),
-    ("FrogPilotDrives", "0"),
-    ("FrogPilotKilometers", "0"),
-    ("FrogPilotMinutes", "0"),
+    ("HpilotDrives", "0"),
+    ("HpilotKilometers", "0"),
+    ("HpilotMinutes", "0"),
     ("FrogsGoMooTune", "1"),
     ("FullMap", "0"),
     ("GasRegenCmd", "0"),
@@ -360,7 +360,7 @@ def manager_cleanup() -> None:
   cloudlog.info("everything is dead")
 
 
-def manager_thread(frogpilot_functions) -> None:
+def manager_thread(hpilot_functions) -> None:
   cloudlog.bind(daemon="manager")
   cloudlog.info("manager start")
   cloudlog.info({"environ": os.environ})
@@ -387,7 +387,7 @@ def manager_thread(frogpilot_functions) -> None:
 
     openpilot_crashed = os.path.isfile(os.path.join(sentry.CRASHES_DIR, 'error.txt'))
     if openpilot_crashed:
-      frogpilot_functions.delete_logs()
+      hpilot_functions.delete_logs()
 
     started = sm['deviceState'].started
 
@@ -431,15 +431,15 @@ def manager_thread(frogpilot_functions) -> None:
 
 
 def main() -> None:
-  frogpilot_functions = FrogPilotFunctions()
+  hpilot_functions = HpilotFunctions()
 
   try:
-    frogpilot_functions.setup_frogpilot()
+    hpilot_functions.setup_hpilot()
   except subprocess.CalledProcessError as e:
-    print(f"Failed to setup FrogPilot. Error: {e}")
+    print(f"Failed to setup Hpilot. Error: {e}")
     return
 
-  manager_init(frogpilot_functions)
+  manager_init(hpilot_functions)
   if os.getenv("PREPAREONLY") is not None:
     return
 
@@ -447,7 +447,7 @@ def main() -> None:
   signal.signal(signal.SIGTERM, lambda signum, frame: sys.exit(1))
 
   try:
-    manager_thread(frogpilot_functions)
+    manager_thread(hpilot_functions)
   except Exception:
     traceback.print_exc()
     sentry.capture_exception()
@@ -457,7 +457,7 @@ def main() -> None:
   params = Params()
   if params.get_bool("DoUninstall"):
     cloudlog.warning("uninstalling")
-    frogpilot_functions.uninstall_frogpilot()
+    hpilot_functions.uninstall_hpilot()
   elif params.get_bool("DoReboot"):
     cloudlog.warning("reboot")
     HARDWARE.reboot()

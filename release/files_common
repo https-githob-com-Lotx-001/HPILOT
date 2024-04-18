@@ -564,13 +564,13 @@ tinygrad_repo/tinygrad/runtime/ops_gpu.py
 tinygrad_repo/tinygrad/shape/*
 tinygrad_repo/tinygrad/*.py
 
-selfdrive/frogpilot/frogpilot_process.py
-selfdrive/frogpilot/controls/frogpilot_plannerd.py
-selfdrive/frogpilot/controls/lib/conditional_experimental_mode.py
-selfdrive/frogpilot/controls/lib/frogpilot_functions.py
-selfdrive/frogpilot/controls/lib/map_turn_speed_controller.py
-selfdrive/frogpilot/controls/lib/model_manager.py
-selfdrive/frogpilot/controls/lib/speed_limit_controller.py
-selfdrive/frogpilot/controls/lib/theme_manager.py
-selfdrive/frogpilot/fleet_manager/fleet_manager.py
-selfdrive/frogpilot/navigation/mapd.py
+selfdrive/hpilot/hpilot_process.py
+selfdrive/hpilot/controls/hpilot_plannerd.py
+selfdrive/hpilot/controls/lib/conditional_experimental_mode.py
+selfdrive/hpilot/controls/lib/hpilot_functions.py
+selfdrive/hpilot/controls/lib/map_turn_speed_controller.py
+selfdrive/hpilot/controls/lib/model_manager.py
+selfdrive/hpilot/controls/lib/speed_limit_controller.py
+selfdrive/hpilot/controls/lib/theme_manager.py
+selfdrive/hpilot/fleet_manager/fleet_manager.py
+selfdrive/hpilot/navigation/mapd.py

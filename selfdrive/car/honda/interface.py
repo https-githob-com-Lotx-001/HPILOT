@@ -17,19 +17,19 @@ TransmissionType = car.CarParams.TransmissionType
 BUTTONS_DICT = {CruiseButtons.RES_ACCEL: ButtonType.accelCruise, CruiseButtons.DECEL_SET: ButtonType.decelCruise,
                 CruiseButtons.MAIN: ButtonType.altButton3, CruiseButtons.CANCEL: ButtonType.cancel}
 SETTINGS_BUTTONS_DICT = {CruiseSettings.DISTANCE: ButtonType.gapAdjustCruise, CruiseSettings.LKAS: ButtonType.altButton1}
-FrogPilotButtonType = custom.FrogPilotCarState.ButtonEvent.Type
+HpilotButtonType = custom.HpilotCarState.ButtonEvent.Type
 
 
 class CarInterface(CarInterfaceBase):
   @staticmethod
-  def get_pid_accel_limits(CP, current_speed, cruise_speed, frogpilot_variables):
+  def get_pid_accel_limits(CP, current_speed, cruise_speed, hpilot_variables):
     if CP.carFingerprint in HONDA_BOSCH:
-      if frogpilot_variables.sport_plus:
+      if hpilot_variables.sport_plus:
         return CarControllerParams.BOSCH_ACCEL_MIN, CarControllerParams.BOSCH_ACCEL_MAX_PLUS
       else:
         return CarControllerParams.BOSCH_ACCEL_MIN, CarControllerParams.BOSCH_ACCEL_MAX
     elif CP.enableGasInterceptor:
-      if frogpilot_variables.sport_plus:
+      if hpilot_variables.sport_plus:
         return CarControllerParams.NIDEC_ACCEL_MIN, CarControllerParams.NIDEC_ACCEL_MAX_PLUS
       else:
         return CarControllerParams.NIDEC_ACCEL_MIN, CarControllerParams.NIDEC_ACCEL_MAX
@@ -257,13 +257,13 @@ class CarInterface(CarInterfaceBase):
       disable_ecu(logcan, sendcan, bus=1, addr=0x18DAB0F1, com_cont_req=b'\x28\x83\x03')
 
   # returns a car.CarState
-  def _update(self, c, frogpilot_variables):
-    ret = self.CS.update(self.cp, self.cp_cam, self.cp_body, frogpilot_variables)
+  def _update(self, c, hpilot_variables):
+    ret = self.CS.update(self.cp, self.cp_cam, self.cp_body, hpilot_variables)
 
     ret.buttonEvents = [
       *create_button_events(self.CS.cruise_buttons, self.CS.prev_cruise_buttons, BUTTONS_DICT),
       *create_button_events(self.CS.cruise_setting, self.CS.prev_cruise_setting, SETTINGS_BUTTONS_DICT),
-      *create_button_events(self.CS.lkas_enabled, self.CS.lkas_previously_enabled, {1: FrogPilotButtonType.lkas}),
+      *create_button_events(self.CS.lkas_enabled, self.CS.lkas_previously_enabled, {1: HpilotButtonType.lkas}),
     ]
 
     # events
@@ -292,5 +292,5 @@ class CarInterface(CarInterfaceBase):
 
   # pass in a car.CarControl
   # to be called @ 100hz
-  def apply(self, c, now_nanos, frogpilot_variables):
-    return self.CC.update(c, self.CS, now_nanos, frogpilot_variables)
+  def apply(self, c, now_nanos, hpilot_variables):
+    return self.CC.update(c, self.CS, now_nanos, hpilot_variables)

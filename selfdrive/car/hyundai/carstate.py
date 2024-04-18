@@ -52,7 +52,7 @@ class CarState(CarStateBase):
 
     self.params = CarControllerParams(CP)
 
-    # FrogPilot variables
+    # Hpilot variables
     self.main_enabled = False
 
   def calculate_speed_limit(self, cp, cp_cam):
@@ -65,9 +65,9 @@ class CarState(CarStateBase):
       speed_limit = cp.vl["Navi_HU"]["SpeedLim_Nav_Clu"]
       return speed_limit if speed_limit not in (0, 255) else 0
 
-  def update(self, cp, cp_cam, frogpilot_variables):
+  def update(self, cp, cp_cam, hpilot_variables):
     if self.CP.carFingerprint in CANFD_CAR:
-      return self.update_canfd(cp, cp_cam, frogpilot_variables)
+      return self.update_canfd(cp, cp_cam, hpilot_variables)
 
     ret = car.CarState.new_message()
     cp_cruise = cp_cam if self.CP.carFingerprint in CAMERA_SCC_CAR else cp
@@ -191,7 +191,7 @@ class CarState(CarStateBase):
 
     return ret
 
-  def update_canfd(self, cp, cp_cam, frogpilot_variables):
+  def update_canfd(self, cp, cp_cam, hpilot_variables):
     ret = car.CarState.new_message()
 
     self.is_metric = cp.vl["CRUISE_BUTTONS_ALT"]["DISTANCE_UNIT"] != 1

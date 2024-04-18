@@ -208,11 +208,11 @@ class RadarD:
 
     self.ready = False
 
-    # FrogPilot variables
+    # Hpilot variables
     self.params = Params()
     self.params_memory = Params("/dev/shm/params")
 
-    self.update_frogpilot_params()
+    self.update_hpilot_params()
 
   def update(self, sm: messaging.SubMaster, rr: Optional[car.RadarData]):
     self.ready = sm.seen['modelV2']
@@ -266,9 +266,9 @@ class RadarD:
       self.radar_state.leadOne = get_lead(self.v_ego, self.ready, self.tracks, leads_v3[0], model_v_ego, self.lead_detection_threshold, low_speed_override=True)
       self.radar_state.leadTwo = get_lead(self.v_ego, self.ready, self.tracks, leads_v3[1], model_v_ego, self.lead_detection_threshold, low_speed_override=False)
 
-    # Update FrogPilot parameters
-    if self.params_memory.get_bool("FrogPilotTogglesUpdated"):
-      self.update_frogpilot_params()
+    # Update Hpilot parameters
+    if self.params_memory.get_bool("HpilotTogglesUpdated"):
+      self.update_hpilot_params()
 
   def publish(self, pm: messaging.PubMaster, lag_ms: float):
     assert self.radar_state is not None
@@ -291,7 +291,7 @@ class RadarD:
       }
     pm.send('liveTracks', tracks_msg)
 
-  def update_frogpilot_params(self):
+  def update_hpilot_params(self):
     longitudinal_tune = self.params.get_bool("LongitudinalTune")
     self.lead_detection_threshold = self.params.get_int("LeadDetectionThreshold") / 100 if longitudinal_tune else .5
 

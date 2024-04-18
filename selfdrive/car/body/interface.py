@@ -25,8 +25,8 @@ class CarInterface(CarInterfaceBase):
 
     return ret
 
-  def _update(self, c, frogpilot_variables):
-    ret = self.CS.update(self.cp, frogpilot_variables)
+  def _update(self, c, hpilot_variables):
+    ret = self.CS.update(self.cp, hpilot_variables)
 
     # wait for everything to init first
     if self.frame > int(5. / DT_CTRL):
@@ -38,5 +38,5 @@ class CarInterface(CarInterfaceBase):
 
     return ret
 
-  def apply(self, c, now_nanos, frogpilot_variables):
-    return self.CC.update(c, self.CS, now_nanos, frogpilot_variables)
+  def apply(self, c, now_nanos, hpilot_variables):
+    return self.CC.update(c, self.CS, now_nanos, hpilot_variables)

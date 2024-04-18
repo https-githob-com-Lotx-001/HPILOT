@@ -46,20 +46,20 @@ class VCruiseHelper:
     self.button_timers = {ButtonType.decelCruise: 0, ButtonType.accelCruise: 0}
     self.button_change_states = {btn: {"standstill": False, "enabled": False} for btn in self.button_timers}
 
-    # FrogPilot variables
+    # Hpilot variables
     self.params_memory = Params("/dev/shm/params")
 
   @property
   def v_cruise_initialized(self):
     return self.v_cruise_kph != V_CRUISE_UNSET
 
-  def update_v_cruise(self, CS, enabled, is_metric, speed_limit_changed, frogpilot_variables):
+  def update_v_cruise(self, CS, enabled, is_metric, speed_limit_changed, hpilot_variables):
     self.v_cruise_kph_last = self.v_cruise_kph
 
     if CS.cruiseState.available:
       if not self.CP.pcmCruise:
         # if stock cruise is completely disabled, then we can use our own set speed logic
-        self._update_v_cruise_non_pcm(CS, enabled, is_metric, speed_limit_changed, frogpilot_variables)
+        self._update_v_cruise_non_pcm(CS, enabled, is_metric, speed_limit_changed, hpilot_variables)
         self.v_cruise_cluster_kph = self.v_cruise_kph
         self.update_button_timers(CS, enabled)
       else:
@@ -69,7 +69,7 @@ class VCruiseHelper:
       self.v_cruise_kph = V_CRUISE_UNSET
       self.v_cruise_cluster_kph = V_CRUISE_UNSET
 
-  def _update_v_cruise_non_pcm(self, CS, enabled, is_metric, speed_limit_changed, frogpilot_variables):
+  def _update_v_cruise_non_pcm(self, CS, enabled, is_metric, speed_limit_changed, hpilot_variables):
     # handle button presses. TODO: this should be in state_control, but a decelCruise press
     # would have the effect of both enabling and changing speed is checked after the state transition
     if not enabled:
@@ -116,15 +116,15 @@ class VCruiseHelper:
     if not self.button_change_states[button_type]["enabled"]:
       return
 
-    v_cruise_delta = v_cruise_delta * (5 if long_press else frogpilot_variables.custom_cruise_increase)
+    v_cruise_delta = v_cruise_delta * (5 if long_press else hpilot_variables.custom_cruise_increase)
     if long_press and self.v_cruise_kph % v_cruise_delta != 0:  # partial interval
       self.v_cruise_kph = CRUISE_NEAREST_FUNC[button_type](self.v_cruise_kph / v_cruise_delta) * v_cruise_delta
     else:
       self.v_cruise_kph += v_cruise_delta * CRUISE_INTERVAL_SIGN[button_type]
 
-    v_cruise_offset = (frogpilot_variables.set_speed_offset * CRUISE_INTERVAL_SIGN[button_type]) if long_press else 0
+    v_cruise_offset = (hpilot_variables.set_speed_offset * CRUISE_INTERVAL_SIGN[button_type]) if long_press else 0
     if v_cruise_offset < 0:
-      v_cruise_offset = frogpilot_variables.set_speed_offset - v_cruise_delta
+      v_cruise_offset = hpilot_variables.set_speed_offset - v_cruise_delta
     self.v_cruise_kph += v_cruise_offset
 
     # If set is pressed while overriding, clip cruise speed to minimum of vEgo
@@ -145,7 +145,7 @@ class VCruiseHelper:
         self.button_timers[b.type.raw] = 1 if b.pressed else 0
         self.button_change_states[b.type.raw] = {"standstill": CS.cruiseState.standstill, "enabled": enabled}
 
-  def initialize_v_cruise(self, CS, experimental_mode: bool, desired_speed_limit, frogpilot_variables) -> None:
+  def initialize_v_cruise(self, CS, experimental_mode: bool, desired_speed_limit, hpilot_variables) -> None:
     # initializing is handled by the PCM
     if self.CP.pcmCruise:
       return
@@ -156,7 +156,7 @@ class VCruiseHelper:
     if any(b.type in (ButtonType.accelCruise, ButtonType.resumeCruise) for b in CS.buttonEvents) and self.v_cruise_kph_last < 250:
       self.v_cruise_kph = self.v_cruise_kph_last
     else:
-      if desired_speed_limit != 0 and frogpilot_variables.set_speed_limit:
+      if desired_speed_limit != 0 and hpilot_variables.set_speed_limit:
         self.v_cruise_kph = int(round(desired_speed_limit * CV.MS_TO_KPH))
       else:
         self.v_cruise_kph = int(round(clip(CS.vEgo * CV.MS_TO_KPH, initial, V_CRUISE_MAX)))

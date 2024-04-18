@@ -16,7 +16,7 @@
 #include "selfdrive/ui/qt/widgets/input.h"
 #include "system/hardware/hw.h"
 
-#include "selfdrive/frogpilot/ui/qt/widgets/frogpilot_controls.h"
+#include "selfdrive/hpilot/ui/qt/widgets/hpilot_controls.h"
 
 void SoftwarePanel::checkForUpdates() {
   std::system("pkill -SIGUSR1 -f selfdrive.updated.updated");
@@ -32,13 +32,13 @@ SoftwarePanel::SoftwarePanel(QWidget* parent) : ListWidget(parent), scene(uiStat
   addItem(versionLbl);
 
   // automatic updates toggle
-  ParamControl *automaticUpdatesToggle = new ParamControl("AutomaticUpdates", tr("Automatically Update FrogPilot"),
-                                                       tr("FrogPilot will automatically update itself and it's assets when you're offroad and connected to Wi-Fi."), "");
+  ParamControl *automaticUpdatesToggle = new ParamControl("AutomaticUpdates", tr("Automatically Update Hpilot"),
+                                                       tr("Hpilot will automatically update itself and it's assets when you're offroad and connected to Wi-Fi."), "");
   connect(automaticUpdatesToggle, &ToggleControl::toggleFlipped, [this]() {
     std::thread([this]() {
-      paramsMemory.putBool("FrogPilotTogglesUpdated", true);
+      paramsMemory.putBool("HpilotTogglesUpdated", true);
       std::this_thread::sleep_for(std::chrono::seconds(1));
-      paramsMemory.putBool("FrogPilotTogglesUpdated", false);
+      paramsMemory.putBool("HpilotTogglesUpdated", false);
     }).detach();
   });
   addItem(automaticUpdatesToggle);
@@ -70,7 +70,7 @@ SoftwarePanel::SoftwarePanel(QWidget* parent) : ListWidget(parent), scene(uiStat
     auto current = params.get("GitBranch");
     QStringList branches = QString::fromStdString(params.get("UpdaterAvailableBranches")).split(",");
     if (!Params("/persist/params").getBool("FrogsGoMoo")) {
-      branches.removeAll("FrogPilot-Development");
+      branches.removeAll("Hpilot-Development");
       branches.removeAll("MAKE-PRS-HERE");
     }
     for (QString b : {current.c_str(), "devel-staging", "devel", "nightly", "master-ci", "master"}) {

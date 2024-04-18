@@ -26,10 +26,10 @@
 #include "selfdrive/ui/qt/util.h"
 #include "selfdrive/ui/qt/qt_window.h"
 
-#include "selfdrive/frogpilot/navigation/ui/navigation_settings.h"
-#include "selfdrive/frogpilot/ui/qt/offroad/control_settings.h"
-#include "selfdrive/frogpilot/ui/qt/offroad/vehicle_settings.h"
-#include "selfdrive/frogpilot/ui/qt/offroad/visual_settings.h"
+#include "selfdrive/hpilot/navigation/ui/navigation_settings.h"
+#include "selfdrive/hpilot/ui/qt/offroad/control_settings.h"
+#include "selfdrive/hpilot/ui/qt/offroad/vehicle_settings.h"
+#include "selfdrive/hpilot/ui/qt/offroad/visual_settings.h"
 
 TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
   // param, title, desc, icon
@@ -334,26 +334,26 @@ DevicePanel::DevicePanel(SettingsWindow *parent) : ListWidget(parent) {
     std::thread([&] {
       resetTogglesBtn->setValue(tr("Resetting toggles..."));
 
-      std::system("find /data/params -type f ! -name 'FrogPilotDrives' ! -name 'FrogPilotMinutes' ! -name 'FrogPilotKilometers' -exec rm {} +");
-      std::system("find /persist/params -type f ! -name 'FrogPilotDrives' ! -name 'FrogPilotMinutes' ! -name 'FrogPilotKilometers' -exec rm {} +");
+      std::system("find /data/params -type f ! -name 'HpilotDrives' ! -name 'HpilotMinutes' ! -name 'HpilotKilometers' -exec rm {} +");
+      std::system("find /persist/params -type f ! -name 'HpilotDrives' ! -name 'HpilotMinutes' ! -name 'HpilotKilometers' -exec rm {} +");
 
       Hardware::reboot();
     }).detach();
   });
   addItem(resetTogglesBtn);
 
-  // Backup FrogPilot
-  std::vector<QString> frogpilotBackupOptions{tr("Backup"), tr("Delete"), tr("Restore")};
-  FrogPilotButtonsControl *frogpilotBackup = new FrogPilotButtonsControl(tr("FrogPilot Backups"), tr("Backup, delete, or restore your FrogPilot backups."), "", frogpilotBackupOptions);
+  // Backup Hpilot
+  std::vector<QString> hpilotBackupOptions{tr("Backup"), tr("Delete"), tr("Restore")};
+  HpilotButtonsControl *hpilotBackup = new HpilotButtonsControl(tr("Hpilot Backups"), tr("Backup, delete, or restore your Hpilot backups."), "", hpilotBackupOptions);
 
-  connect(frogpilotBackup, &FrogPilotButtonsControl::buttonClicked, [=](int id) {
+  connect(hpilotBackup, &HpilotButtonsControl::buttonClicked, [=](int id) {
     QDir backupDir("/data/backups");
 
     if (id == 0) {
       QString nameSelection = InputDialog::getText(tr("Name your backup"), this, "", false, 1);
       if (!nameSelection.isEmpty()) {
         std::thread([=]() {
-          frogpilotBackup->setValue(tr("Backing up..."));
+          hpilotBackup->setValue(tr("Backing up..."));
 
           std::string fullBackupPath = backupDir.absolutePath().toStdString() + "/" + nameSelection.toStdString();
 
@@ -365,14 +365,14 @@ DevicePanel::DevicePanel(SettingsWindow *parent) : ListWidget(parent) {
           int result = std::system(command.c_str());
           if (result == 0) {
             std::cout << "Backup successful to " << fullBackupPath << std::endl;
-            frogpilotBackup->setValue(tr("Success!"));
+            hpilotBackup->setValue(tr("Success!"));
             std::this_thread::sleep_for(std::chrono::seconds(3));
-            frogpilotBackup->setValue("");
+            hpilotBackup->setValue("");
           } else {
             std::cerr << "Backup failed with error code: " << result << std::endl;
-            frogpilotBackup->setValue(tr("Failed..."));
+            hpilotBackup->setValue(tr("Failed..."));
             std::this_thread::sleep_for(std::chrono::seconds(3));
-            frogpilotBackup->setValue("");
+            hpilotBackup->setValue("");
           }
         }).detach();
       }
@@ -383,15 +383,15 @@ DevicePanel::DevicePanel(SettingsWindow *parent) : ListWidget(parent) {
       if (!selection.isEmpty()) {
         if (!ConfirmationDialog::confirm(tr("Are you sure you want to delete this backup?"), tr("Delete"), this)) return;
         std::thread([=]() {
-          frogpilotBackup->setValue(tr("Deleting..."));
+          hpilotBackup->setValue(tr("Deleting..."));
           QDir dirToDelete(backupDir.absoluteFilePath(selection));
           if (dirToDelete.removeRecursively()) {
-            frogpilotBackup->setValue(tr("Deleted!"));
+            hpilotBackup->setValue(tr("Deleted!"));
           } else {
-            frogpilotBackup->setValue(tr("Failed..."));
+            hpilotBackup->setValue(tr("Failed..."));
           }
           std::this_thread::sleep_for(std::chrono::seconds(3));
-          frogpilotBackup->setValue("");
+          hpilotBackup->setValue("");
         }).detach();
       }
     } else {
@@ -399,9 +399,9 @@ DevicePanel::DevicePanel(SettingsWindow *parent) : ListWidget(parent) {
 
       QString selection = MultiOptionDialog::getSelection(tr("Select a restore point"), backupNames, "", this);
       if (!selection.isEmpty()) {
-        if (!ConfirmationDialog::confirm(tr("Are you sure you want to restore this version of FrogPilot?"), tr("Restore"), this)) return;
+        if (!ConfirmationDialog::confirm(tr("Are you sure you want to restore this version of Hpilot?"), tr("Restore"), this)) return;
         std::thread([=]() {
-          frogpilotBackup->setValue(tr("Restoring..."));
+          hpilotBackup->setValue(tr("Restoring..."));
 
           std::string sourcePath = backupDir.absolutePath().toStdString() + "/" + selection.toStdString();
           std::string targetPath = "/data/safe_staging/finalized";
@@ -420,9 +420,9 @@ DevicePanel::DevicePanel(SettingsWindow *parent) : ListWidget(parent) {
               std::cout << ".overlay_consistent file created successfully." << std::endl;
             } else {
               std::cerr << "Failed to create .overlay_consistent file." << std::endl;
-              frogpilotBackup->setValue(tr("Failed..."));
+              hpilotBackup->setValue(tr("Failed..."));
               std::this_thread::sleep_for(std::chrono::seconds(3));
-              frogpilotBackup->setValue("");
+              hpilotBackup->setValue("");
             }
             Hardware::reboot();
           } else {
@@ -432,13 +432,13 @@ DevicePanel::DevicePanel(SettingsWindow *parent) : ListWidget(parent) {
       }
     }
   });
-  addItem(frogpilotBackup);
+  addItem(hpilotBackup);
 
   // Backup toggles
   std::vector<QString> toggleBackupOptions{tr("Backup"), tr("Delete"), tr("Restore")};
-  FrogPilotButtonsControl *toggleBackup = new FrogPilotButtonsControl(tr("Toggle Backups"), tr("Backup, delete, or restore your toggle backups."), "", toggleBackupOptions);
+  HpilotButtonsControl *toggleBackup = new HpilotButtonsControl(tr("Toggle Backups"), tr("Backup, delete, or restore your toggle backups."), "", toggleBackupOptions);
 
-  connect(toggleBackup, &FrogPilotButtonsControl::buttonClicked, [=](int id) {
+  connect(toggleBackup, &HpilotButtonsControl::buttonClicked, [=](int id) {
     QDir backupDir("/data/toggle_backups");
 
     if (id == 0) {
@@ -507,10 +507,10 @@ DevicePanel::DevicePanel(SettingsWindow *parent) : ListWidget(parent) {
           if (result == 0) {
             std::cout << "Restore successful from " << sourcePath << " to " << targetPath << std::endl;
             toggleBackup->setValue(tr("Success!"));
-            paramsMemory.putBool("FrogPilotTogglesUpdated", true);
+            paramsMemory.putBool("HpilotTogglesUpdated", true);
             std::this_thread::sleep_for(std::chrono::seconds(3));
             toggleBackup->setValue("");
-            paramsMemory.putBool("FrogPilotTogglesUpdated", false);
+            paramsMemory.putBool("HpilotTogglesUpdated", false);
           } else {
             std::cerr << "Restore failed with error code: " << result << std::endl;
             toggleBackup->setValue(tr("Failed..."));
@@ -537,12 +537,12 @@ DevicePanel::DevicePanel(SettingsWindow *parent) : ListWidget(parent) {
   reboot_btn->setObjectName("reboot_btn");
   power_layout->addWidget(reboot_btn);
   QObject::connect(reboot_btn, &QPushButton::clicked, this, &DevicePanel::reboot);
-  
+
   QPushButton *softreboot_btn = new QPushButton(tr("Soft Reboot"));
   softreboot_btn->setObjectName("softreboot_btn");
   power_layout->addWidget(softreboot_btn);
   QObject::connect(softreboot_btn, &QPushButton::clicked, this, &DevicePanel::softreboot);
-  
+
   QPushButton *poweroff_btn = new QPushButton(tr("Power Off"));
   poweroff_btn->setObjectName("poweroff_btn");
   power_layout->addWidget(poweroff_btn);
@@ -689,22 +689,22 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
   QObject::connect(this, &SettingsWindow::expandToggleDescription, toggles, &TogglesPanel::expandToggleDescription);
   QObject::connect(toggles, &TogglesPanel::updateMetric, this, &SettingsWindow::updateMetric);
 
-  FrogPilotControlsPanel *frogpilotControls = new FrogPilotControlsPanel(this);
-  QObject::connect(frogpilotControls, &FrogPilotControlsPanel::openSubParentToggle, this, [this]() {subParentToggleOpen = true;});
-  QObject::connect(frogpilotControls, &FrogPilotControlsPanel::openParentToggle, this, [this]() {parentToggleOpen = true;});
+  HpilotControlsPanel *hpilotControls = new HpilotControlsPanel(this);
+  QObject::connect(hpilotControls, &HpilotControlsPanel::openSubParentToggle, this, [this]() {subParentToggleOpen = true;});
+  QObject::connect(hpilotControls, &HpilotControlsPanel::openParentToggle, this, [this]() {parentToggleOpen = true;});
 
-  FrogPilotVisualsPanel *frogpilotVisuals = new FrogPilotVisualsPanel(this);
-  QObject::connect(frogpilotVisuals, &FrogPilotVisualsPanel::openParentToggle, this, [this]() {parentToggleOpen = true;});
+  HpilotVisualsPanel *hpilotVisuals = new HpilotVisualsPanel(this);
+  QObject::connect(hpilotVisuals, &HpilotVisualsPanel::openParentToggle, this, [this]() {parentToggleOpen = true;});
 
   QList<QPair<QString, QWidget *>> panels = {
     {tr("Device"), device},
     {tr("Network"), new Networking(this)},
     {tr("Toggles"), toggles},
     {tr("Software"), new SoftwarePanel(this)},
-    {tr("Controls"), frogpilotControls},
-    {tr("Navigation"), new FrogPilotNavigationPanel(this)},
-    {tr("Vehicles"), new FrogPilotVehiclesPanel(this)},
-    {tr("Visuals"), frogpilotVisuals},
+    {tr("Controls"), hpilotControls},
+    {tr("Navigation"), new HpilotNavigationPanel(this)},
+    {tr("Vehicles"), new HpilotVehiclesPanel(this)},
+    {tr("Visuals"), hpilotVisuals},
   };
 
   nav_btns = new QButtonGroup(this);
