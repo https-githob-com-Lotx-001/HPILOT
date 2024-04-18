@@ -10,7 +10,7 @@ import urllib.request
 from openpilot.common.realtime import Ratekeeper
 
 VERSION = 'v1'
-VERSION_URL = f"https://github.com/FrogAi/Hpilot-Resources/raw/master/mapd_version_{VERSION}.txt"
+VERSION_URL = f"https://github.com/FrogAi/FrogPilot-Resources/raw/master/mapd_version_{VERSION}.txt"
 MAPD_PATH = '/data/media/0/osm/mapd'
 VERSION_PATH = '/data/media/0/osm/mapd_version'
 

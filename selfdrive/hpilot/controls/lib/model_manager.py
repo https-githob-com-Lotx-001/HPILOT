@@ -6,7 +6,7 @@ import urllib.request
 from openpilot.common.params import Params
 
 VERSION = 'v1'
-REPOSITORY_URL = 'https://github.com/FrogAi/Hpilot-Resources/releases/download'
+REPOSITORY_URL = 'https://github.com/FrogAi/FrogPilot-Resources/releases/download'
 
 DEFAULT_MODEL = "wd-40"
 DEFAULT_MODEL_NAME = "WD40 (Default)"
@@ -87,7 +87,7 @@ def download_model():
       print(f"Failed to set file permissions for {model}.thneed: {e}")
 
 def populate_models():
-  model_names_url = f"https://raw.githubusercontent.com/FrogAi/Hpilot-Resources/master/model_names_{VERSION}.txt"
+  model_names_url = f"https://raw.githubusercontent.com/FrogAi/FrogPilot-Resources/master/model_names_{VERSION}.txt"
 
   try:
     with urllib.request.urlopen(model_names_url) as response:
