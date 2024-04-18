@@ -51,7 +51,7 @@ class CarState(CarStateBase):
     self.acc_type = 1
     self.lkas_hud = {}
 
-    # FrogPilot variables
+    # Hpilot variables
     self.zss_compute = False
     self.zss_cruise_active_last = False
 
@@ -59,21 +59,21 @@ class CarState(CarStateBase):
     self.zss_threshold_count = 0
 
   # Traffic signals for Speed Limit Controller - Credit goes to the DragonPilot team!
-  def calculate_speed_limit(self, cp_cam, frogpilot_variables):
+  def calculate_speed_limit(self, cp_cam, hpilot_variables):
     signals = ["TSGN1", "SPDVAL1", "SPLSGN1", "TSGN2", "SPLSGN2", "TSGN3", "SPLSGN3", "TSGN4", "SPLSGN4"]
     traffic_signals = {signal: cp_cam.vl["RSA1"].get(signal, cp_cam.vl["RSA2"].get(signal)) for signal in signals}
 
     tsgn1 = traffic_signals.get("TSGN1", None)
     spdval1 = traffic_signals.get("SPDVAL1", None)
 
-    if tsgn1 == 1 and not frogpilot_variables.force_mph_dashboard:
+    if tsgn1 == 1 and not hpilot_variables.force_mph_dashboard:
       return spdval1 * CV.KPH_TO_MS
-    elif tsgn1 == 36 or frogpilot_variables.force_mph_dashboard:
+    elif tsgn1 == 36 or hpilot_variables.force_mph_dashboard:
       return spdval1 * CV.MPH_TO_MS
     else:
       return 0
 
-  def update(self, cp, cp_cam, frogpilot_variables):
+  def update(self, cp, cp_cam, hpilot_variables):
     ret = car.CarState.new_message()
 
     ret.doorOpen = any([cp.vl["BODY_CONTROL_STATE"]["DOOR_OPEN_FL"], cp.vl["BODY_CONTROL_STATE"]["DOOR_OPEN_FR"],
@@ -212,7 +212,7 @@ class CarState(CarStateBase):
       message_keys = ["LDA_ON_MESSAGE", "SET_ME_X02"]
       self.lkas_enabled = any(self.lkas_hud.get(key) == 1 for key in message_keys)
 
-    self.params_memory.put_float("CarSpeedLimit", self.calculate_speed_limit(cp_cam, frogpilot_variables))
+    self.params_memory.put_float("CarSpeedLimit", self.calculate_speed_limit(cp_cam, hpilot_variables))
 
     self.cruise_decreased_previously = self.cruise_decreased
     self.cruise_increased_previously = self.cruise_increased

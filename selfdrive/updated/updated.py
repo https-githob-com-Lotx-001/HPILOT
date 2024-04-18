@@ -237,7 +237,7 @@ class Updater:
     self.branches = defaultdict(str)
     self._has_internet: bool = False
 
-    # FrogPilot variables
+    # Hpilot variables
     self.offline_mode = self.params.get_bool("DeviceManagement") and self.params.get_bool("OfflineMode")
 
   @property
@@ -448,7 +448,7 @@ def main() -> None:
 
     # Run the update loop
     first_run = True
-    branches_set = "FrogPilot" in (params.get("UpdaterAvailableBranches", encoding='utf-8') or "").split(',')
+    branches_set = "Hpilot" in (params.get("UpdaterAvailableBranches", encoding='utf-8') or "").split(',')
     install_date_set = params.get("InstallDate") is not None and params.get("Updated") is not None
     install_date_set &= params.get("InstallDate") != "November 21, 2023 - 02:10PM"  # Remove this on the June 1st update
 

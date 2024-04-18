@@ -116,7 +116,7 @@ void OnroadWindow::updateState(const UIState &s) {
 }
 
 void OnroadWindow::mousePressEvent(QMouseEvent* e) {
-  // FrogPilot clickable widgets
+  // Hpilot clickable widgets
   bool widgetClicked = false;
 
   // Change cruise control increments button
@@ -143,13 +143,13 @@ void OnroadWindow::mousePressEvent(QMouseEvent* e) {
     if (isMaxSpeedClicked) {
       std::thread([this]() {
         bool currentReverseCruise = scene.reverse_cruise;
-  
+
         uiState()->scene.reverse_cruise = !currentReverseCruise;
         params.putBoolNonBlocking("ReverseCruise", !currentReverseCruise);
 
-        paramsMemory.putBool("FrogPilotTogglesUpdated", true);
+        paramsMemory.putBool("HpilotTogglesUpdated", true);
         std::this_thread::sleep_for(std::chrono::seconds(1));
-        paramsMemory.putBool("FrogPilotTogglesUpdated", false);
+        paramsMemory.putBool("HpilotTogglesUpdated", false);
       }).detach();
 
     } else if (isSpeedClicked) {
@@ -379,18 +379,18 @@ ExperimentalButton::ExperimentalButton(QWidget *parent) : experimental_mode(fals
 
   wheelImages = {
     {0, loadPixmap("../assets/img_chffr_wheel.png", {img_size, img_size})},
-    {1, loadPixmap("../frogpilot/assets/wheel_images/lexus.png", {img_size, img_size})},
-    {2, loadPixmap("../frogpilot/assets/wheel_images/toyota.png", {img_size, img_size})},
-    {3, loadPixmap("../frogpilot/assets/wheel_images/frog.png", {img_size, img_size})},
-    {4, loadPixmap("../frogpilot/assets/wheel_images/rocket.png", {img_size, img_size})},
-    {5, loadPixmap("../frogpilot/assets/wheel_images/hyundai.png", {img_size, img_size})},
-    {6, loadPixmap("../frogpilot/assets/wheel_images/stalin.png", {img_size, img_size})},
-    {7, loadPixmap("../frogpilot/assets/random_events/images/firefox.png", {img_size, img_size})},
+    {1, loadPixmap("../hpilot/assets/wheel_images/lexus.png", {img_size, img_size})},
+    {2, loadPixmap("../hpilot/assets/wheel_images/toyota.png", {img_size, img_size})},
+    {3, loadPixmap("../hpilot/assets/wheel_images/frog.png", {img_size, img_size})},
+    {4, loadPixmap("../hpilot/assets/wheel_images/rocket.png", {img_size, img_size})},
+    {5, loadPixmap("../hpilot/assets/wheel_images/hyundai.png", {img_size, img_size})},
+    {6, loadPixmap("../hpilot/assets/wheel_images/stalin.png", {img_size, img_size})},
+    {7, loadPixmap("../hpilot/assets/random_events/images/firefox.png", {img_size, img_size})},
   };
 
-  wheelImagesGif[1] = new QMovie("../frogpilot/assets/random_events/images/weeb_wheel.gif", QByteArray(), this);
-  wheelImagesGif[2] = new QMovie("../frogpilot/assets/random_events/images/tree_fiddy.gif", QByteArray(), this);
-  wheelImagesGif[3] = new QMovie("../frogpilot/assets/random_events/images/great_scott.gif", QByteArray(), this);
+  wheelImagesGif[1] = new QMovie("../hpilot/assets/random_events/images/weeb_wheel.gif", QByteArray(), this);
+  wheelImagesGif[2] = new QMovie("../hpilot/assets/random_events/images/tree_fiddy.gif", QByteArray(), this);
+  wheelImagesGif[3] = new QMovie("../hpilot/assets/random_events/images/great_scott.gif", QByteArray(), this);
 }
 
 void ExperimentalButton::changeMode() {
@@ -415,7 +415,7 @@ void ExperimentalButton::updateState(const UIState &s, bool leadInfo) {
     update();
   }
 
-  // FrogPilot variables
+  // Hpilot variables
   int randomEvent = scene.current_random_event;
 
   rotatingWheel = scene.rotating_wheel;
@@ -535,8 +535,8 @@ AnnotatedCameraWidget::AnnotatedCameraWidget(VisionStreamType type, QWidget* par
 
   dm_img = loadPixmap("../assets/img_driver_face.png", {img_size + 5, img_size + 5});
 
-  // Initialize FrogPilot widgets
-  initializeFrogPilotWidgets();
+  // Initialize Hpilot widgets
+  initializeHpilotWidgets();
 }
 
 void AnnotatedCameraWidget::updateState(const UIState &s) {
@@ -593,7 +593,7 @@ void AnnotatedCameraWidget::updateState(const UIState &s) {
     main_layout->setAlignment(map_settings_btn, (rightHandDM ? Qt::AlignLeft : Qt::AlignRight) | Qt::AlignTop);
   }
 
-  updateFrogPilotWidgets();
+  updateHpilotWidgets();
 }
 
 void AnnotatedCameraWidget::drawHud(QPainter &p) {
@@ -736,8 +736,8 @@ void AnnotatedCameraWidget::drawHud(QPainter &p) {
 
   p.restore();
 
-  // Draw FrogPilot widgets
-  paintFrogPilotWidgets(p);
+  // Draw Hpilot widgets
+  paintHpilotWidgets(p);
 }
 
 void AnnotatedCameraWidget::drawText(QPainter &p, int x, int y, const QString &text, int alpha) {
@@ -1188,8 +1188,8 @@ void AnnotatedCameraWidget::showEvent(QShowEvent *event) {
   prev_draw_t = millis_since_boot();
 }
 
-// FrogPilot widgets
-void AnnotatedCameraWidget::initializeFrogPilotWidgets() {
+// Hpilot widgets
+void AnnotatedCameraWidget::initializeHpilotWidgets() {
   bottom_layout = new QHBoxLayout();
 
   distance_btn = new DistanceButton(this);
@@ -1269,7 +1269,7 @@ void AnnotatedCameraWidget::initializeFrogPilotWidgets() {
   record_timer->start(1000 / UI_FREQ);
 }
 
-void AnnotatedCameraWidget::updateFrogPilotWidgets() {
+void AnnotatedCameraWidget::updateHpilotWidgets() {
   alertSize = scene.alert_size;
 
   alwaysOnLateralActive = scene.always_on_lateral_active;
@@ -1326,11 +1326,11 @@ void AnnotatedCameraWidget::updateFrogPilotWidgets() {
     QString themePath;
 
     if (currentHolidayTheme != 0) {
-      themePath = QString("../frogpilot/assets/holiday_themes/%1/images").arg(
+      themePath = QString("../hpilot/assets/holiday_themes/%1/images").arg(
         holidayThemeConfiguration.find(currentHolidayTheme) != holidayThemeConfiguration.end() ?
         std::get<0>(holidayThemeConfiguration[currentHolidayTheme]) : "");
     } else {
-      themePath = QString("../frogpilot/assets/custom_themes/%1/images").arg(
+      themePath = QString("../hpilot/assets/custom_themes/%1/images").arg(
         themeConfiguration.find(customSignals) != themeConfiguration.end() ?
         std::get<0>(themeConfiguration[customSignals]) : "");
     }
@@ -1357,7 +1357,7 @@ void AnnotatedCameraWidget::updateFrogPilotWidgets() {
   }
 }
 
-void AnnotatedCameraWidget::paintFrogPilotWidgets(QPainter &p) {
+void AnnotatedCameraWidget::paintHpilotWidgets(QPainter &p) {
   if ((showAlwaysOnLateralStatusBar || showConditionalExperimentalStatusBar || roadNameUI) && !bigMapOpen) {
     drawStatusBar(p);
   }
@@ -1419,7 +1419,7 @@ Compass::Compass(QWidget *parent) : QWidget(parent), scene(uiState()->scene) {
   x = (btn_size * 1.5) / 2 + 20;
   y = (btn_size * 1.5) / 2;
 
-  compassInnerImg = loadPixmap("../frogpilot/assets/other_images/compass_inner.png", QSize(compassSize / 1.75, compassSize / 1.75));
+  compassInnerImg = loadPixmap("../hpilot/assets/other_images/compass_inner.png", QSize(compassSize / 1.75, compassSize / 1.75));
 
   staticElements = QPixmap(size());
   staticElements.fill(Qt::transparent);
@@ -1518,17 +1518,17 @@ DistanceButton::DistanceButton(QWidget *parent) : QPushButton(parent), scene(uiS
   setFixedSize(btn_size * 1.5, btn_size * 1.5);
 
   profile_data = {
-    {QPixmap("../frogpilot/assets/other_images/traffic.png"), "Traffic"},
-    {QPixmap("../frogpilot/assets/other_images/aggressive.png"), "Aggressive"},
-    {QPixmap("../frogpilot/assets/other_images/standard.png"), "Standard"},
-    {QPixmap("../frogpilot/assets/other_images/relaxed.png"), "Relaxed"}
+    {QPixmap("../hpilot/assets/other_images/traffic.png"), "Traffic"},
+    {QPixmap("../hpilot/assets/other_images/aggressive.png"), "Aggressive"},
+    {QPixmap("../hpilot/assets/other_images/standard.png"), "Standard"},
+    {QPixmap("../hpilot/assets/other_images/relaxed.png"), "Relaxed"}
   };
 
   profile_data_kaofui = {
-    {QPixmap("../frogpilot/assets/other_images/traffic_kaofui.png"), "Traffic"},
-    {QPixmap("../frogpilot/assets/other_images/aggressive_kaofui.png"), "Aggressive"},
-    {QPixmap("../frogpilot/assets/other_images/standard_kaofui.png"), "Standard"},
-    {QPixmap("../frogpilot/assets/other_images/relaxed_kaofui.png"), "Relaxed"}
+    {QPixmap("../hpilot/assets/other_images/traffic_kaofui.png"), "Traffic"},
+    {QPixmap("../hpilot/assets/other_images/aggressive_kaofui.png"), "Aggressive"},
+    {QPixmap("../hpilot/assets/other_images/standard_kaofui.png"), "Standard"},
+    {QPixmap("../hpilot/assets/other_images/relaxed_kaofui.png"), "Relaxed"}
   };
 
   transitionTimer.start();
@@ -1698,8 +1698,8 @@ void AnnotatedCameraWidget::drawLeadInfo(QPainter &p) {
 PedalIcons::PedalIcons(QWidget *parent) : QWidget(parent), scene(uiState()->scene) {
   setFixedSize(btn_size, btn_size);
 
-  brake_pedal_img = loadPixmap("../frogpilot/assets/other_images/brake_pedal.png", QSize(img_size, img_size));
-  gas_pedal_img = loadPixmap("../frogpilot/assets/other_images/gas_pedal.png", QSize(img_size, img_size));
+  brake_pedal_img = loadPixmap("../hpilot/assets/other_images/brake_pedal.png", QSize(img_size, img_size));
+  gas_pedal_img = loadPixmap("../hpilot/assets/other_images/gas_pedal.png", QSize(img_size, img_size));
 }
 
 void PedalIcons::updateState() {

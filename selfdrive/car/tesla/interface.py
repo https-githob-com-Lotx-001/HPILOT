@@ -44,12 +44,12 @@ class CarInterface(CarInterfaceBase):
     ret.steerActuatorDelay = 0.25
     return ret
 
-  def _update(self, c, frogpilot_variables):
-    ret = self.CS.update(self.cp, self.cp_cam, frogpilot_variables)
+  def _update(self, c, hpilot_variables):
+    ret = self.CS.update(self.cp, self.cp_cam, hpilot_variables)
 
     ret.events = self.create_common_events(ret).to_msg()
 
     return ret
 
-  def apply(self, c, now_nanos, frogpilot_variables):
-    return self.CC.update(c, self.CS, now_nanos, frogpilot_variables)
+  def apply(self, c, now_nanos, hpilot_variables):
+    return self.CC.update(c, self.CS, now_nanos, hpilot_variables)

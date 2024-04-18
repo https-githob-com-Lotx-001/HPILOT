@@ -59,16 +59,16 @@ class CarController(CarControllerBase):
     self.gas = 0
     self.accel = 0
 
-    # FrogPilot variables
+    # Hpilot variables
     params = Params()
 
     self.cydia_tune = params.get_bool("CydiaTune")
-    self.frogs_go_moo_tune = params.get_bool("FrogsGoMooTune")
+    self.c_haucke_tune = params.get_bool("CHauckeTune")
 
     self.doors_locked = False
     self.doors_unlocked = True
 
-  def update(self, CC, CS, now_nanos, frogpilot_variables):
+  def update(self, CC, CS, now_nanos, hpilot_variables):
     actuators = CC.actuators
     hud_control = CC.hudControl
     pcm_cancel_cmd = CC.cruiseControl.cancel
@@ -155,14 +155,14 @@ class CarController(CarControllerBase):
       self.prohibit_neg_calculation = False
 
     # limit minimum to only positive until first positive is reached after engagement, don't calculate when long isn't active
-    if CC.longActive and not self.prohibit_neg_calculation and (self.cydia_tune or self.frogs_go_moo_tune):
+    if CC.longActive and not self.prohibit_neg_calculation and (self.cydia_tune or self.c_haucke_tune):
       accel_offset = CS.pcm_neutral_force / self.CP.mass
     else:
       accel_offset = 0.
 
     # only calculate pcm_accel_cmd when long is active to prevent disengagement from accelerator depression
     if CC.longActive:
-      if frogpilot_variables.sport_plus:
+      if hpilot_variables.sport_plus:
         pcm_accel_cmd = clip(actuators.accel + accel_offset, self.params.ACCEL_MIN, self.params.ACCEL_MAX_PLUS)
       else:
         pcm_accel_cmd = clip(actuators.accel + accel_offset, self.params.ACCEL_MIN, self.params.ACCEL_MAX)
@@ -175,7 +175,7 @@ class CarController(CarControllerBase):
       pcm_cancel_cmd = 1
 
     # on entering standstill, send standstill request
-    if CS.out.standstill and not self.last_standstill and (self.CP.carFingerprint not in NO_STOP_TIMER_CAR or self.CP.enableGasInterceptor) and not frogpilot_variables.sng_hack:
+    if CS.out.standstill and not self.last_standstill and (self.CP.carFingerprint not in NO_STOP_TIMER_CAR or self.CP.enableGasInterceptor) and not hpilot_variables.sng_hack:
       self.standstill_req = True
     if CS.pcm_acc_status != 8:
       # pcm entered standstill or it's disabled
@@ -191,7 +191,7 @@ class CarController(CarControllerBase):
     if (self.frame % 3 == 0 and self.CP.openpilotLongitudinalControl) or pcm_cancel_cmd:
       lead = hud_control.leadVisible or CS.out.vEgo < 12.  # at low speed we always assume the lead is present so ACC can be engaged
       # when stopping, send -2.5 raw acceleration immediately to prevent vehicle from creeping, else send actuators.accel
-      accel_raw = -2.5 if stopping and (self.cydia_tune or self.frogs_go_moo_tune) else actuators.accel
+      accel_raw = -2.5 if stopping and (self.cydia_tune or self.c_haucke_tune) else actuators.accel
 
       # Press distance button until we are at the correct bar length. Only change while enabled to avoid skipping startup popup
       if self.frame % 6 == 0 and self.CP.openpilotLongitudinalControl:
@@ -206,10 +206,10 @@ class CarController(CarControllerBase):
         can_sends.append(toyotacan.create_acc_cancel_command(self.packer))
       elif self.CP.openpilotLongitudinalControl:
         can_sends.append(toyotacan.create_accel_command(self.packer, pcm_accel_cmd, accel_raw, pcm_cancel_cmd, self.standstill_req, lead, CS.acc_type, fcw_alert,
-                                                        self.distance_button, frogpilot_variables))
+                                                        self.distance_button, hpilot_variables))
         self.accel = pcm_accel_cmd
       else:
-        can_sends.append(toyotacan.create_accel_command(self.packer, 0, 0, pcm_cancel_cmd, False, lead, CS.acc_type, False, self.distance_button, frogpilot_variables))
+        can_sends.append(toyotacan.create_accel_command(self.packer, 0, 0, pcm_cancel_cmd, False, lead, CS.acc_type, False, self.distance_button, hpilot_variables))
 
     if self.frame % 2 == 0 and self.CP.enableGasInterceptor and self.CP.openpilotLongitudinalControl:
       # send exactly zero if gas cmd is zero. Interceptor will send the max between read value and gas cmd.
@@ -257,13 +257,13 @@ class CarController(CarControllerBase):
 
     # Lock doors when in drive / unlock doors when in park
     if self.doors_unlocked and CS.out.gearShifter != PARK and CS.out.vEgo >= CRUISING_SPEED:
-      if frogpilot_variables.lock_doors:
+      if hpilot_variables.lock_doors:
         can_sends.append(make_can_msg(0x750, LOCK_CMD, 0))
       self.doors_locked = True
       self.doors_unlocked = False
 
     elif self.doors_locked and CS.out.gearShifter == PARK:
-      if frogpilot_variables.unlock_doors:
+      if hpilot_variables.unlock_doors:
         can_sends.append(make_can_msg(0x750, UNLOCK_CMD, 0))
       self.doors_locked = False
       self.doors_unlocked = True

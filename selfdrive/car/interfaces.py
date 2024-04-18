@@ -206,7 +206,7 @@ class CarInterfaceBase(ABC):
     if CarController is not None:
       self.CC = CarController(self.cp.dbc_name, CP, self.VM)
 
-    # FrogPilot variables
+    # Hpilot variables
     self.params = Params()
     self.params_memory = Params("/dev/shm/params")
 
@@ -243,8 +243,8 @@ class CarInterfaceBase(ABC):
     return (self.lat_torque_nn_model is not None)
 
   @staticmethod
-  def get_pid_accel_limits(CP, current_speed, cruise_speed, frogpilot_variables):
-    if frogpilot_variables.sport_plus:
+  def get_pid_accel_limits(CP, current_speed, cruise_speed, hpilot_variables):
+    if hpilot_variables.sport_plus:
       return ACCEL_MIN, ACCEL_MAX_PLUS
     else:
       return ACCEL_MIN, ACCEL_MAX
@@ -373,14 +373,14 @@ class CarInterfaceBase(ABC):
   def _update(self, c: car.CarControl) -> car.CarState:
     pass
 
-  def update(self, c: car.CarControl, can_strings: list[bytes], frogpilot_variables) -> car.CarState:
+  def update(self, c: car.CarControl, can_strings: list[bytes], hpilot_variables) -> car.CarState:
     # parse can
     for cp in self.can_parsers:
       if cp is not None:
         cp.update_strings(can_strings)
 
     # get CarState
-    ret = self._update(c, frogpilot_variables)
+    ret = self._update(c, hpilot_variables)
 
     ret.canValid = all(cp.can_valid for cp in self.can_parsers if cp is not None)
     ret.canTimeout = any(cp.bus_timeout for cp in self.can_parsers if cp is not None)
@@ -400,7 +400,7 @@ class CarInterfaceBase(ABC):
       ret.cruiseState.speedCluster = ret.cruiseState.speed
 
     distance_button = self.CS.distance_button or self.params_memory.get_bool("OnroadDistanceButtonPressed")
-    self.params_memory.put_bool("DistanceLongPressed", self.frogpilot_distance_functions(distance_button, self.prev_distance_button, frogpilot_variables))
+    self.params_memory.put_bool("DistanceLongPressed", self.hpilot_distance_functions(distance_button, self.prev_distance_button, hpilot_variables))
     self.prev_distance_button = distance_button
 
     # copy back for next iteration
@@ -487,14 +487,14 @@ class CarInterfaceBase(ABC):
 
     return events
 
-  def frogpilot_distance_functions(self, distance_button, prev_distance_button, frogpilot_variables):
+  def hpilot_distance_functions(self, distance_button, prev_distance_button, hpilot_variables):
     if distance_button:
       self.gap_counter += 1
     elif not prev_distance_button:
       self.gap_counter = 0
 
-    if self.gap_counter == CRUISE_LONG_PRESS * 1.5 and frogpilot_variables.experimental_mode_via_distance or self.traffic_mode_changed:
-      if frogpilot_variables.conditional_experimental_mode:
+    if self.gap_counter == CRUISE_LONG_PRESS * 1.5 and hpilot_variables.experimental_mode_via_distance or self.traffic_mode_changed:
+      if hpilot_variables.conditional_experimental_mode:
         conditional_status = self.params_memory.get_int("CEStatus")
         override_value = 0 if conditional_status in {1, 2, 3, 4, 5, 6} else 1 if conditional_status >= 7 else 2
         self.params_memory.put_int("CEStatus", override_value)
@@ -503,10 +503,10 @@ class CarInterfaceBase(ABC):
         self.params.put_bool("ExperimentalMode", not experimental_mode)
       self.traffic_mode_changed = False
 
-    if self.gap_counter == CRUISE_LONG_PRESS * 5 and frogpilot_variables.traffic_mode:
+    if self.gap_counter == CRUISE_LONG_PRESS * 5 and hpilot_variables.traffic_mode:
       traffic_mode = self.params_memory.get_bool("TrafficModeActive")
       self.params_memory.put_bool("TrafficModeActive", not traffic_mode)
-      self.traffic_mode_changed = frogpilot_variables.experimental_mode_via_distance
+      self.traffic_mode_changed = hpilot_variables.experimental_mode_via_distance
 
     return self.gap_counter >= CRUISE_LONG_PRESS
 
@@ -548,7 +548,7 @@ class CarStateBase(ABC):
     K = get_kalman_gain(DT_CTRL, np.array(A), np.array(C), np.array(Q), R)
     self.v_ego_kf = KF1D(x0=x0, A=A, C=C[0], K=K)
 
-    # FrogPilot variables
+    # Hpilot variables
     self.params_memory = Params("/dev/shm/params")
 
     self.cruise_decreased = False

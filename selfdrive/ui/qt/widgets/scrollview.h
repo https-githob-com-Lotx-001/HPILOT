@@ -8,7 +8,7 @@ class ScrollView : public QScrollArea {
 public:
   explicit ScrollView(QWidget *w = nullptr, QWidget *parent = nullptr);
 
-  // FrogPilot functions
+  // Hpilot functions
   void restorePosition(int previousScrollPosition);
 
 protected:

@@ -78,7 +78,7 @@ private:
   void updateDestinationMarker();
   uint64_t route_rcv_frame = 0;
 
-  // FrogPilot variables
+  // Hpilot variables
   Params params;
 
   int previous_map_style;

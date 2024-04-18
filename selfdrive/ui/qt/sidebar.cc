@@ -39,7 +39,7 @@ Sidebar::Sidebar(QWidget *parent) : QFrame(parent), onroad(false), flag_pressed(
 
   pm = std::make_unique<PubMaster, const std::initializer_list<const char *>>({"userFlag"});
 
-  // FrogPilot variables
+  // Hpilot variables
   isCPU = params.getBool("ShowCPU");
   isGPU = params.getBool("ShowGPU");
 
@@ -66,7 +66,7 @@ Sidebar::Sidebar(QWidget *parent) : QFrame(parent), onroad(false), flag_pressed(
 
   for (auto &[key, themeData] : holidayThemeConfiguration) {
     QString &themeName = themeData.first;
-    QString base = themeName == "stock" ? "../assets/images" : QString("../frogpilot/assets/holiday_themes/%1/images").arg(themeName);
+    QString base = themeName == "stock" ? "../assets/images" : QString("../hpilot/assets/holiday_themes/%1/images").arg(themeName);
     std::vector<QString> paths = {base + "/button_home.png", base + "/button_flag.png", base + "/button_settings.png"};
 
     holiday_home_imgs[key] = loadPixmap(paths[0], home_btn.size());
@@ -83,7 +83,7 @@ Sidebar::Sidebar(QWidget *parent) : QFrame(parent), onroad(false), flag_pressed(
 
   for (auto &[key, themeData] : themeConfiguration) {
     QString &themeName = themeData.first;
-    QString base = themeName == "stock" ? "../assets/images" : QString("../frogpilot/assets/custom_themes/%1/images").arg(themeName);
+    QString base = themeName == "stock" ? "../assets/images" : QString("../hpilot/assets/custom_themes/%1/images").arg(themeName);
     std::vector<QString> paths = {base + "/button_home.png", base + "/button_flag.png", base + "/button_settings.png"};
 
     home_imgs[key] = loadPixmap(paths[0], home_btn.size());
@@ -186,7 +186,7 @@ void Sidebar::updateState(const UIState &s) {
   int strength = (int)deviceState.getNetworkStrength();
   setProperty("netStrength", strength > 0 ? strength + 1 : 0);
 
-  // FrogPilot properties
+  // Hpilot properties
   if (scene.current_holiday_theme != 0) {
     home_img = holiday_home_imgs[scene.current_holiday_theme];
     flag_img = holiday_flag_imgs[scene.current_holiday_theme];
@@ -199,14 +199,14 @@ void Sidebar::updateState(const UIState &s) {
     currentColors = themeConfiguration[scene.custom_colors].second;
   }
 
-  auto frogpilotDeviceState = sm["frogpilotDeviceState"].getFrogpilotDeviceState();
+  auto hpilotDeviceState = sm["hpilotDeviceState"].getHpilotDeviceState();
 
   bool isNumericalTemp = scene.numerical_temp;
 
   int maxTempC = deviceState.getMaxTempC();
   QString max_temp = scene.fahrenheit ? QString::number(maxTempC * 9 / 5 + 32) + "°F" : QString::number(maxTempC) + "°C";
 
-  // FrogPilot metrics
+  // Hpilot metrics
   if (isCPU || isGPU) {
     auto cpu_loads = deviceState.getCpuUsagePercent();
     int cpu_usage = std::accumulate(cpu_loads.begin(), cpu_loads.end(), 0) / cpu_loads.size();
@@ -229,8 +229,8 @@ void Sidebar::updateState(const UIState &s) {
 
   if (isMemoryUsage || isStorageLeft || isStorageUsed) {
     int memory_usage = deviceState.getMemoryUsagePercent();
-    int storage_left = frogpilotDeviceState.getFreeSpace();
-    int storage_used = frogpilotDeviceState.getUsedSpace();
+    int storage_left = hpilotDeviceState.getFreeSpace();
+    int storage_used = hpilotDeviceState.getUsedSpace();
 
     QString memory = QString::number(memory_usage) + "%";
     QString storage = QString::number(isStorageLeft ? storage_left : storage_used) + tr(" GB");

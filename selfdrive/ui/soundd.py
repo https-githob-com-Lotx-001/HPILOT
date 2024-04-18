@@ -66,12 +66,12 @@ def check_controls_timeout_alert(sm):
 
 class Soundd:
   def __init__(self):
-    # FrogPilot variables
+    # Hpilot variables
     self.params = Params()
     self.params_memory = Params("/dev/shm/params")
 
     self.previous_sound_directory = None
-    self.random_events_directory = BASEDIR + "/selfdrive/frogpilot/assets/random_events/sounds/"
+    self.random_events_directory = BASEDIR + "/selfdrive/hpilot/assets/random_events/sounds/"
 
     self.random_events_map = {
       AudibleAlert.angry: MAX_VOLUME,
@@ -83,7 +83,7 @@ class Soundd:
       AudibleAlert.uwu: MAX_VOLUME,
     }
 
-    self.update_frogpilot_params()
+    self.update_hpilot_params()
 
     self.current_alert = AudibleAlert.none
     self.current_volume = MIN_VOLUME
@@ -201,11 +201,11 @@ class Soundd:
 
         assert stream.active
 
-        # Update FrogPilot parameters
-        if self.params_memory.get_bool("FrogPilotTogglesUpdated"):
-          self.update_frogpilot_params()
+        # Update Hpilot parameters
+        if self.params_memory.get_bool("HpilotTogglesUpdated"):
+          self.update_hpilot_params()
 
-  def update_frogpilot_params(self):
+  def update_hpilot_params(self):
     self.alert_volume_control = self.params.get_bool("AlertVolumeControl")
 
     self.volume_map = {
@@ -252,11 +252,11 @@ class Soundd:
 
     if current_holiday_theme != 0:
       theme_name = holiday_theme_configuration.get(current_holiday_theme)
-      self.sound_directory = BASEDIR + ("/selfdrive/frogpilot/assets/holiday_themes/" + theme_name + "/sounds/")
+      self.sound_directory = BASEDIR + ("/selfdrive/hpilot/assets/holiday_themes/" + theme_name + "/sounds/")
       self.goat_scream = False
     else:
       theme_name = theme_configuration.get(custom_sounds)
-      self.sound_directory = BASEDIR + ("/selfdrive/frogpilot/assets/custom_themes/" + theme_name + "/sounds/" if custom_sounds != 0 else "/selfdrive/assets/sounds/")
+      self.sound_directory = BASEDIR + ("/selfdrive/hpilot/assets/custom_themes/" + theme_name + "/sounds/" if custom_sounds != 0 else "/selfdrive/assets/sounds/")
 
     if self.sound_directory != self.previous_sound_directory:
       self.load_sounds()

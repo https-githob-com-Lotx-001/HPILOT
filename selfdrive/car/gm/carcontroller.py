@@ -50,7 +50,7 @@ class CarController(CarControllerBase):
     self.packer_obj = CANPacker(DBC[self.CP.carFingerprint]['radar'])
     self.packer_ch = CANPacker(DBC[self.CP.carFingerprint]['chassis'])
 
-    # FrogPilot variables
+    # Hpilot variables
     self.pitch = FirstOrderFilter(0., 0.09 * 4, DT_CTRL * 4)  # runs at 25 Hz
     self.accel_g = 0.0
 
@@ -69,7 +69,7 @@ class CarController(CarControllerBase):
     return pedal_gas
 
 
-  def update(self, CC, CS, now_nanos, frogpilot_variables):
+  def update(self, CC, CS, now_nanos, hpilot_variables):
     actuators = CC.actuators
     accel = actuators.accel
     hud_control = CC.hudControl
@@ -124,7 +124,7 @@ class CarController(CarControllerBase):
 
         # Pitch compensated acceleration;
         # TODO: include future pitch (sm['modelDataV2'].orientation.y) to account for long actuator delay
-        if frogpilot_variables.long_pitch and len(CC.orientationNED) > 1:
+        if hpilot_variables.long_pitch and len(CC.orientationNED) > 1:
           self.pitch.update(CC.orientationNED[1])
           self.accel_g = ACCELERATION_DUE_TO_GRAVITY * apply_deadzone(self.pitch.x, PITCH_DEADZONE) # driving uphill is positive pitch
           accel += self.accel_g
@@ -138,19 +138,19 @@ class CarController(CarControllerBase):
           self.apply_brake = int(min(-100 * self.CP.stopAccel, self.params.MAX_BRAKE))
         else:
           brake_accel = actuators.accel + self.accel_g * interp(CS.out.vEgo, BRAKE_PITCH_FACTOR_BP, BRAKE_PITCH_FACTOR_V)
-          if self.CP.carFingerprint in EV_CAR and frogpilot_variables.use_ev_tables:
+          if self.CP.carFingerprint in EV_CAR and hpilot_variables.use_ev_tables:
             self.params.update_ev_gas_brake_threshold(CS.out.vEgo)
-            if frogpilot_variables.sport_plus:
-              self.apply_gas = int(round(interp(accel if frogpilot_variables.long_pitch else actuators.accel, self.params.EV_GAS_LOOKUP_BP_PLUS, self.params.GAS_LOOKUP_V_PLUS)))
+            if hpilot_variables.sport_plus:
+              self.apply_gas = int(round(interp(accel if hpilot_variables.long_pitch else actuators.accel, self.params.EV_GAS_LOOKUP_BP_PLUS, self.params.GAS_LOOKUP_V_PLUS)))
             else:
-              self.apply_gas = int(round(interp(accel if frogpilot_variables.long_pitch else actuators.accel, self.params.EV_GAS_LOOKUP_BP, self.params.GAS_LOOKUP_V)))
-            self.apply_brake = int(round(interp(brake_accel if frogpilot_variables.long_pitch else actuators.accel, self.params.EV_BRAKE_LOOKUP_BP, self.params.BRAKE_LOOKUP_V)))
+              self.apply_gas = int(round(interp(accel if hpilot_variables.long_pitch else actuators.accel, self.params.EV_GAS_LOOKUP_BP, self.params.GAS_LOOKUP_V)))
+            self.apply_brake = int(round(interp(brake_accel if hpilot_variables.long_pitch else actuators.accel, self.params.EV_BRAKE_LOOKUP_BP, self.params.BRAKE_LOOKUP_V)))
           else:
-            if frogpilot_variables.sport_plus:
-              self.apply_gas = int(round(interp(accel if frogpilot_variables.long_pitch else actuators.accel, self.params.GAS_LOOKUP_BP_PLUS, self.params.GAS_LOOKUP_V_PLUS)))
+            if hpilot_variables.sport_plus:
+              self.apply_gas = int(round(interp(accel if hpilot_variables.long_pitch else actuators.accel, self.params.GAS_LOOKUP_BP_PLUS, self.params.GAS_LOOKUP_V_PLUS)))
             else:
-              self.apply_gas = int(round(interp(accel if frogpilot_variables.long_pitch else actuators.accel, self.params.GAS_LOOKUP_BP, self.params.GAS_LOOKUP_V)))
-            self.apply_brake = int(round(interp(brake_accel if frogpilot_variables.long_pitch else actuators.accel, self.params.BRAKE_LOOKUP_BP, self.params.BRAKE_LOOKUP_V)))
+              self.apply_gas = int(round(interp(accel if hpilot_variables.long_pitch else actuators.accel, self.params.GAS_LOOKUP_BP, self.params.GAS_LOOKUP_V)))
+            self.apply_brake = int(round(interp(brake_accel if hpilot_variables.long_pitch else actuators.accel, self.params.BRAKE_LOOKUP_BP, self.params.BRAKE_LOOKUP_V)))
           # Don't allow any gas above inactive regen while stopping
           # FIXME: brakes aren't applied immediately when enabling at a stop
           if stopping:

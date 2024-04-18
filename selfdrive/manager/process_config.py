@@ -44,7 +44,7 @@ def only_onroad(started: bool, params, CP: car.CarParams) -> bool:
 def only_offroad(started, params, CP: car.CarParams) -> bool:
   return not started
 
-# FrogPilot functions
+# Hpilot functions
 def allow_logging(started, params, CP: car.CarParams) -> bool:
   allow_logging = not (params.get_bool("DeviceManagement") and params.get_bool("NoLogging"))
   return allow_logging and logging(started, params, CP)
@@ -101,10 +101,10 @@ procs = [
   PythonProcess("webrtcd", "system.webrtc.webrtcd", notcar),
   PythonProcess("webjoystick", "tools.bodyteleop.web", notcar),
 
-  # FrogPilot processes
-  PythonProcess("fleet_manager", "selfdrive.frogpilot.fleetmanager.fleet_manager", always_run),
-  PythonProcess("frogpilot_process", "selfdrive.frogpilot.frogpilot_process", always_run),
-  PythonProcess("mapd", "selfdrive.frogpilot.navigation.mapd", always_run),
+  # Hpilot processes
+  PythonProcess("fleet_manager", "selfdrive.hpilot.fleetmanager.fleet_manager", always_run),
+  PythonProcess("hpilot_process", "selfdrive.hpilot.hpilot_process", always_run),
+  PythonProcess("mapd", "selfdrive.hpilot.navigation.mapd", always_run),
 ]
 
 managed_processes = {p.name: p for p in procs}

@@ -21,7 +21,7 @@ class CarState(CarStateBase):
     self.prev_distance_button = 0
     self.distance_button = 0
 
-  def update(self, cp, cp_cam, frogpilot_variables):
+  def update(self, cp, cp_cam, hpilot_variables):
 
     ret = car.CarState.new_message()
 

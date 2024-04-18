@@ -12,7 +12,7 @@
 #include "selfdrive/ui/ui.h"
 #include "selfdrive/ui/qt/widgets/cameraview.h"
 
-#include "selfdrive/frogpilot/screenrecorder/screenrecorder.h"
+#include "selfdrive/hpilot/screenrecorder/screenrecorder.h"
 
 const int btn_size = 192;
 const int img_size = (btn_size / 4) * 3;
@@ -34,7 +34,7 @@ private:
   QColor bg;
   Alert alert = {};
 
-  // FrogPilot variables
+  // Hpilot variables
   UIScene &scene;
 };
 
@@ -105,7 +105,7 @@ private:
   bool experimental_mode;
   bool engageable;
 
-  // FrogPilot variables
+  // Hpilot variables
   Params paramsMemory{"/dev/shm/params"};
   UIScene &scene;
 
@@ -197,17 +197,17 @@ private:
   int skip_frame_count = 0;
   bool wide_cam_requested = false;
 
-  // FrogPilot widgets
-  void initializeFrogPilotWidgets();
-  void paintFrogPilotWidgets(QPainter &p);
-  void updateFrogPilotWidgets();
+  // Hpilot widgets
+  void initializeHpilotWidgets();
+  void paintHpilotWidgets(QPainter &p);
+  void updateHpilotWidgets();
 
   void drawLeadInfo(QPainter &p);
   void drawSLCConfirmation(QPainter &p);
   void drawStatusBar(QPainter &p);
   void drawTurnSignals(QPainter &p);
 
-  // FrogPilot variables
+  // Hpilot variables
   Params paramsMemory{"/dev/shm/params"};
   UIScene &scene;
 
@@ -310,7 +310,7 @@ private:
   QWidget *map = nullptr;
   QHBoxLayout* split;
 
-  // FrogPilot variables
+  // Hpilot variables
   UIScene &scene;
   Params params;
   Params paramsMemory{"/dev/shm/params"};

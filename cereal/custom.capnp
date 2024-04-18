@@ -8,13 +8,13 @@ $Cxx.namespace("cereal");
 # cereal, so use these if you want custom events in your fork.
 
 # you can rename the struct, but don't change the identifier
-struct FrogPilotCarControl @0x81c2f05a394cf4af {
+struct HpilotCarControl @0x81c2f05a394cf4af {
   alwaysOnLateral @0 :Bool;
   speedLimitChanged @1 :Bool;
   trafficModeActive @2 :Bool;
 }
 
-struct FrogPilotCarState @0xaedffd8f31e7b55d {
+struct HpilotCarState @0xaedffd8f31e7b55d {
   struct ButtonEvent {
     enum Type {
       lkas @0;
@@ -22,17 +22,17 @@ struct FrogPilotCarState @0xaedffd8f31e7b55d {
   }
 }
 
-struct FrogPilotDeviceState @0xf35cc4560bbf6ec2 {
+struct HpilotDeviceState @0xf35cc4560bbf6ec2 {
   freeSpace @0 :Int16;
   usedSpace @1 :Int16;
 }
 
-struct FrogPilotNavigation @0xda96579883444c35 {
+struct HpilotNavigation @0xda96579883444c35 {
   approachingIntersection @0 :Bool;
   approachingTurn @1 :Bool;
 }
 
-struct FrogPilotPlan @0x80ae746ee2596b11 {
+struct HpilotPlan @0x80ae746ee2596b11 {
   adjustedCruise @0 :Float64;
   conditionalExperimental @1 :Bool;
   desiredFollowDistance @2 :Int16;

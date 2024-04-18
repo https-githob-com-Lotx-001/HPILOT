@@ -64,14 +64,14 @@ class RouteEngine:
         self.mapbox_token = ""
       self.mapbox_host = "https://maps.comma.ai"
 
-    # FrogPilot variables
+    # Hpilot variables
     self.stop_coord = []
     self.stop_signal = []
 
     self.approaching_intersection = False
     self.approaching_turn = False
 
-    self.update_frogpilot_params()
+    self.update_hpilot_params()
 
   def update(self):
     self.sm.update(0)
@@ -91,9 +91,9 @@ class RouteEngine:
     except Exception:
       cloudlog.exception("navd.failed_to_compute")
 
-    # Update FrogPilot parameters
-    if self.params_memory.get_bool("FrogPilotTogglesUpdated"):
-      self.update_frogpilot_params()
+    # Update Hpilot parameters
+    if self.params_memory.get_bool("HpilotTogglesUpdated"):
+      self.update_hpilot_params()
 
   def update_location(self):
     location = self.sm['liveLocationKalman']
@@ -400,13 +400,13 @@ class RouteEngine:
       self.approaching_intersection = False
       self.approaching_turn = False
 
-    frogpilot_plan_send = messaging.new_message('frogpilotNavigation')
-    frogpilotNavigation = frogpilot_plan_send.frogpilotNavigation
+    hpilot_plan_send = messaging.new_message('hpilotNavigation')
+    hpilotNavigation = hpilot_plan_send.hpilotNavigation
 
-    frogpilotNavigation.approachingIntersection = self.approaching_intersection
-    frogpilotNavigation.approachingTurn = self.approaching_turn
+    hpilotNavigation.approachingIntersection = self.approaching_intersection
+    hpilotNavigation.approachingTurn = self.approaching_turn
 
-    self.pm.send('frogpilotNavigation', frogpilot_plan_send)
+    self.pm.send('hpilotNavigation', hpilot_plan_send)
 
   def send_route(self):
     coords = []
@@ -456,13 +456,13 @@ class RouteEngine:
     return self.reroute_counter > REROUTE_COUNTER_MIN
     # TODO: Check for going wrong way in segment
 
-  def update_frogpilot_params(self):
+  def update_hpilot_params(self):
     self.conditional_navigation = self.params.get_bool("CENavigation")
     self.conditional_navigation_intersections = self.conditional_navigation and self.params.get_bool("CENavigationIntersections")
     self.conditional_navigation_turns = self.conditional_navigation and self.params.get_bool("CENavigationTurns")
 
 def main():
-  pm = messaging.PubMaster(['navInstruction', 'navRoute', 'frogpilotNavigation'])
+  pm = messaging.PubMaster(['navInstruction', 'navRoute', 'hpilotNavigation'])
   sm = messaging.SubMaster(['carState', 'liveLocationKalman', 'managerState'])
 
   rk = Ratekeeper(1.0)
