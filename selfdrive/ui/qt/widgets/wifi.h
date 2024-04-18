@@ -19,7 +19,7 @@ public slots:
   void updateState(const UIState &s);
 
 private:
-  // FrogPilot variables
+  // Hpilot variables
   Params params;
 
 protected:

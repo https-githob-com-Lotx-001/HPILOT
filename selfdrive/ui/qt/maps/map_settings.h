@@ -65,7 +65,7 @@ private:
   DestinationWidget *work_widget;
   std::vector<DestinationWidget *> widgets;
 
-  // FrogPilot variables
+  // Hpilot variables
   QLabel *subtitle;
 
   WifiManager *wifi;

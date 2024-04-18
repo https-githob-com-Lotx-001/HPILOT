@@ -243,10 +243,10 @@ def gen_long_ocp():
 
 class LongitudinalMpc:
   def __init__(self, mode='acc'):
-    # FrogPilot variables
+    # Hpilot variables
     self.params_memory = Params("/dev/shm/params")
 
-    self.update_frogpilot_params()
+    self.update_hpilot_params()
 
     self.mode = mode
     self.solver = AcadosOcpSolverCython(MODEL_NAME, ACADOS_SOLVER_TYPE, N)
@@ -434,8 +434,8 @@ class LongitudinalMpc:
          (lead_1_obstacle[0] - lead_0_obstacle[0]):
         self.source = 'lead1'
 
-    if self.params_memory.get_bool("FrogPilotTogglesUpdated"):
-      self.update_frogpilot_params()
+    if self.params_memory.get_bool("HpilotTogglesUpdated"):
+      self.update_hpilot_params()
 
   def run(self):
     # t0 = time.monotonic()
@@ -479,7 +479,7 @@ class LongitudinalMpc:
     # print(f"long_mpc timings: total internal {self.solve_time:.2e}, external: {(time.monotonic() - t0):.2e} qp {self.time_qp_solution:.2e}, \
     # lin {self.time_linearization:.2e} qp_iter {qp_iter}, reset {reset}")
 
-  def update_frogpilot_params(self):
+  def update_hpilot_params(self):
     params = Params()
 
     is_metric = params.get_bool("IsMetric")

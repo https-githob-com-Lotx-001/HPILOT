@@ -744,7 +744,7 @@ struct ControlsState @0x97ff69c53601abf1 {
     normal @0;       # low priority alert for user's convenience
     userPrompt @1;   # mid priority alert that might require user intervention
     critical @2;     # high priority alert that needs immediate user intervention
-    frogpilot @3;    # green startup alert
+    hpilot @3;    # green startup alert
   }
 
   enum AlertSize {
@@ -2339,11 +2339,11 @@ struct Event {
     customReservedRawData2 @126 :Data;
 
     # *********** Custom: reserved for forks ***********
-    frogpilotCarControl @107 :Custom.FrogPilotCarControl;
-    frogpilotCarState @108 :Custom.FrogPilotCarState;
-    frogpilotDeviceState @109 :Custom.FrogPilotDeviceState;
-    frogpilotNavigation @110 :Custom.FrogPilotNavigation;
-    frogpilotPlan @111 :Custom.FrogPilotPlan;
+    hpilotCarControl @107 :Custom.HpilotCarControl;
+    hpilotCarState @108 :Custom.HpilotCarState;
+    hpilotDeviceState @109 :Custom.HpilotDeviceState;
+    hpilotNavigation @110 :Custom.HpilotNavigation;
+    hpilotPlan @111 :Custom.HpilotPlan;
     customReserved5 @112 :Custom.CustomReserved5;
     customReserved6 @113 :Custom.CustomReserved6;
     customReserved7 @114 :Custom.CustomReserved7;

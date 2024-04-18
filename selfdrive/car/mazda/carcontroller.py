@@ -16,7 +16,7 @@ class CarController(CarControllerBase):
     self.brake_counter = 0
     self.frame = 0
 
-  def update(self, CC, CS, now_nanos, frogpilot_variables):
+  def update(self, CC, CS, now_nanos, hpilot_variables):
     can_sends = []
 
     apply_steer = 0

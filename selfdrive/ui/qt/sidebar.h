@@ -18,7 +18,7 @@ class Sidebar : public QFrame {
   Q_PROPERTY(QString netType MEMBER net_type NOTIFY valueChanged);
   Q_PROPERTY(int netStrength MEMBER net_strength NOTIFY valueChanged);
 
-  // FrogPilot properties
+  // Hpilot properties
   Q_PROPERTY(ItemStatus cpuStatus MEMBER cpu_status NOTIFY valueChanged)
   Q_PROPERTY(ItemStatus memoryStatus MEMBER memory_status NOTIFY valueChanged)
   Q_PROPERTY(ItemStatus storageStatus MEMBER storage_status NOTIFY valueChanged)
@@ -65,7 +65,7 @@ protected:
 private:
   std::unique_ptr<PubMaster> pm;
 
-  // FrogPilot variables
+  // Hpilot variables
   Params params;
   UIScene &scene;
 

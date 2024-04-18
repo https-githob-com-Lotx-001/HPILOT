@@ -19,7 +19,7 @@ TransmissionType = car.CarParams.TransmissionType
 NetworkLocation = car.CarParams.NetworkLocation
 BUTTONS_DICT = {CruiseButtons.RES_ACCEL: ButtonType.accelCruise, CruiseButtons.DECEL_SET: ButtonType.decelCruise,
                 CruiseButtons.MAIN: ButtonType.altButton3, CruiseButtons.CANCEL: ButtonType.cancel}
-FrogPilotButtonType = custom.FrogPilotCarState.ButtonEvent.Type
+HpilotButtonType = custom.HpilotCarState.ButtonEvent.Type
 
 PEDAL_MSG = 0x201
 CAM_MSG = 0x320  # AEBCmd
@@ -38,8 +38,8 @@ NEURAL_PARAMS_PATH = os.path.join(BASEDIR, 'selfdrive/car/torque_data/neural_ff_
 
 class CarInterface(CarInterfaceBase):
   @staticmethod
-  def get_pid_accel_limits(CP, current_speed, cruise_speed, frogpilot_variables):
-    if frogpilot_variables.sport_plus:
+  def get_pid_accel_limits(CP, current_speed, cruise_speed, hpilot_variables):
+    if hpilot_variables.sport_plus:
       return CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX_PLUS
     else:
       return CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX
@@ -312,8 +312,8 @@ class CarInterface(CarInterfaceBase):
     return ret
 
   # returns a car.CarState
-  def _update(self, c, frogpilot_variables):
-    ret = self.CS.update(self.cp, self.cp_cam, self.cp_loopback, frogpilot_variables)
+  def _update(self, c, hpilot_variables):
+    ret = self.CS.update(self.cp, self.cp_cam, self.cp_loopback, hpilot_variables)
 
     # Don't add event if transitioning from INIT, unless it's to an actual button
     if self.CS.cruise_buttons != CruiseButtons.UNPRESS or self.CS.prev_cruise_buttons != CruiseButtons.INIT:
@@ -322,7 +322,7 @@ class CarInterface(CarInterfaceBase):
                               unpressed_btn=CruiseButtons.UNPRESS),
         *create_button_events(self.CS.distance_button, self.CS.prev_distance_button,
                               {1: ButtonType.gapAdjustCruise}),
-        *create_button_events(self.CS.lkas_enabled, self.CS.lkas_previously_enabled, {1: FrogPilotButtonType.lkas}),
+        *create_button_events(self.CS.lkas_enabled, self.CS.lkas_previously_enabled, {1: HpilotButtonType.lkas}),
       ]
 
     # The ECM allows enabling on falling edge of set, but only rising edge of resume
@@ -368,5 +368,5 @@ class CarInterface(CarInterfaceBase):
 
     return ret
 
-  def apply(self, c, now_nanos, frogpilot_variables):
-    return self.CC.update(c, self.CS, now_nanos, frogpilot_variables)
+  def apply(self, c, now_nanos, hpilot_variables):
+    return self.CC.update(c, self.CS, now_nanos, hpilot_variables)

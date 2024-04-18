@@ -78,7 +78,7 @@ def format_params(params):
   return formatted_params
 
 
-def get_frogpilot_params(params, keys):
+def get_hpilot_params(params, keys):
   return {key: params.get(key) or '0' for key in keys}
 
 
@@ -104,7 +104,7 @@ def capture_fingerprint(params, candidate, blocked=False):
     "ShowSLCOffset", "ShowSLCOffsetUI", "UseVienna", "VisionTurnControl", "DisableVTSCSmoothing", "CurveSensitivity", "TurnAggressiveness",
   ], [
     "ForceFingerprint", "DisableOpenpilotLongitudinal", "EVTable", "LongPitch", "GasRegenCmd", "CrosstrekTorque", "LockDoors", "StockTune", "CydiaTune",
-    "DragonPilotTune", "FrogsGoMooTune", "LockDoors", "SNGHack",
+    "DragonPilotTune", "CHauckeTune", "LockDoors", "SNGHack",
   ], [
     "AlertVolumeControl", "DisengageVolume", "EngageVolume", "PromptVolume", "PromptDistractedVolume", "RefuseVolume", "WarningSoftVolume",
     "WarningImmediateVolume", "CustomAlerts", "GreenLightAlert", "LeadDepartingAlert", "LoudBlindspotAlert", "SpeedLimitChangedAlert", "CustomUI",
@@ -117,17 +117,17 @@ def capture_fingerprint(params, candidate, blocked=False):
   ], [
     "AutomaticUpdates", "ShowCPU", "ShowGPU", "ShowIP", "ShowMemoryUsage", "ShowStorageLeft", "ShowStorageUsed", "Sidebar", "TetheringEnabled",
   ], [
-    "FrogPilotDrives", "FrogPilotKilometers", "FrogPilotMinutes"
+    "HpilotDrives", "HpilotKilometers", "HpilotMinutes"
   ]
 
-  control_params, vehicle_params, visual_params, other_params, tracking_params = map(lambda keys: get_frogpilot_params(params, keys), [control_keys, vehicle_keys, visual_keys, other_keys, tracking_keys])
+  control_params, vehicle_params, visual_params, other_params, tracking_params = map(lambda keys: get_hpilot_params(params, keys), [control_keys, vehicle_keys, visual_keys, other_keys, tracking_keys])
   control_values, vehicle_values, visual_values, other_values, tracking_values = map(format_params, [control_params, vehicle_params, visual_params, other_params, tracking_params])
   control_chunks, vehicle_chunks, visual_chunks, other_chunks, tracking_chunks = map(lambda data: chunk_data(data, 50), [control_values, vehicle_values, visual_values, other_values, tracking_values])
 
   no_internet = 0
   while True:
     if sentry_pinged():
-      for chunks, label in zip([control_chunks, vehicle_chunks, visual_chunks, other_chunks, tracking_chunks], ["FrogPilot Controls", "FrogPilot Vehicles", "FrogPilot Visuals", "Other Toggles", "FrogPilot Tracking"]):
+      for chunks, label in zip([control_chunks, vehicle_chunks, visual_chunks, other_chunks, tracking_chunks], ["Hpilot Controls", "Hpilot Vehicles", "Hpilot Visuals", "Other Toggles", "Hpilot Tracking"]):
         with sentry_sdk.configure_scope() as scope:
           set_sentry_scope(scope, chunks, label)
       if blocked:

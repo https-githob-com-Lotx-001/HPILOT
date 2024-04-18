@@ -225,7 +225,7 @@ static void update_state(UIState *s) {
   }
   if (sm.updated("carParams")) {
     scene.longitudinal_control = sm["carParams"].getCarParams().getOpenpilotLongitudinalControl();
-    ui_update_frogpilot_params(s);
+    ui_update_hpilot_params(s);
   }
   if (sm.updated("carState")) {
     auto carState = sm["carState"].getCarState();
@@ -249,27 +249,27 @@ static void update_state(UIState *s) {
     auto deviceState = sm["deviceState"].getDeviceState();
     scene.online = deviceState.getNetworkType() != cereal::DeviceState::NetworkType::NONE;
   }
-  if (sm.updated("frogpilotCarControl")) {
-    auto frogpilotCarControl = sm["frogpilotCarControl"].getFrogpilotCarControl();
-    scene.always_on_lateral_active = !scene.enabled && frogpilotCarControl.getAlwaysOnLateral();
-    scene.speed_limit_changed = scene.speed_limit_controller && frogpilotCarControl.getSpeedLimitChanged();
-    scene.traffic_mode_active = frogpilotCarControl.getTrafficModeActive();
+  if (sm.updated("hpilotCarControl")) {
+    auto hpilotCarControl = sm["hpilotCarControl"].getHpilotCarControl();
+    scene.always_on_lateral_active = !scene.enabled && hpilotCarControl.getAlwaysOnLateral();
+    scene.speed_limit_changed = scene.speed_limit_controller && hpilotCarControl.getSpeedLimitChanged();
+    scene.traffic_mode_active = hpilotCarControl.getTrafficModeActive();
   }
-  if (sm.updated("frogpilotPlan")) {
-    auto frogpilotPlan = sm["frogpilotPlan"].getFrogpilotPlan();
-    scene.adjusted_cruise = frogpilotPlan.getAdjustedCruise();
-    scene.desired_follow = frogpilotPlan.getDesiredFollowDistance();
-    scene.lane_width_left = frogpilotPlan.getLaneWidthLeft();
-    scene.lane_width_right = frogpilotPlan.getLaneWidthRight();
-    scene.obstacle_distance = frogpilotPlan.getSafeObstacleDistance();
-    scene.obstacle_distance_stock = frogpilotPlan.getSafeObstacleDistanceStock();
-    scene.speed_limit = frogpilotPlan.getSlcSpeedLimit();
-    scene.speed_limit_offset = frogpilotPlan.getSlcSpeedLimitOffset();
-    scene.speed_limit_overridden = frogpilotPlan.getSlcOverridden();
-    scene.speed_limit_overridden_speed = frogpilotPlan.getSlcOverriddenSpeed();
-    scene.stopped_equivalence = frogpilotPlan.getStoppedEquivalenceFactor();
-    scene.unconfirmed_speed_limit = frogpilotPlan.getUnconfirmedSlcSpeedLimit();
-    scene.vtsc_controlling_curve = frogpilotPlan.getVtscControllingCurve();
+  if (sm.updated("hpilotPlan")) {
+    auto hpilotPlan = sm["hpilotPlan"].getHpilotPlan();
+    scene.adjusted_cruise = hpilotPlan.getAdjustedCruise();
+    scene.desired_follow = hpilotPlan.getDesiredFollowDistance();
+    scene.lane_width_left = hpilotPlan.getLaneWidthLeft();
+    scene.lane_width_right = hpilotPlan.getLaneWidthRight();
+    scene.obstacle_distance = hpilotPlan.getSafeObstacleDistance();
+    scene.obstacle_distance_stock = hpilotPlan.getSafeObstacleDistanceStock();
+    scene.speed_limit = hpilotPlan.getSlcSpeedLimit();
+    scene.speed_limit_offset = hpilotPlan.getSlcSpeedLimitOffset();
+    scene.speed_limit_overridden = hpilotPlan.getSlcOverridden();
+    scene.speed_limit_overridden_speed = hpilotPlan.getSlcOverriddenSpeed();
+    scene.stopped_equivalence = hpilotPlan.getStoppedEquivalenceFactor();
+    scene.unconfirmed_speed_limit = hpilotPlan.getUnconfirmedSlcSpeedLimit();
+    scene.vtsc_controlling_curve = hpilotPlan.getVtscControllingCurve();
   }
   if (sm.updated("liveLocationKalman")) {
     auto liveLocationKalman = sm["liveLocationKalman"].getLiveLocationKalman();
@@ -298,7 +298,7 @@ void ui_update_params(UIState *s) {
   s->scene.map_on_left = params.getBool("NavSettingLeftSide");
 }
 
-void ui_update_frogpilot_params(UIState *s) {
+void ui_update_hpilot_params(UIState *s) {
   Params params = Params();
   UIScene &scene = s->scene;
 
@@ -420,7 +420,7 @@ UIState::UIState(QObject *parent) : QObject(parent) {
     "modelV2", "controlsState", "liveCalibration", "radarState", "deviceState",
     "pandaStates", "carParams", "driverMonitoringState", "carState", "liveLocationKalman", "driverStateV2",
     "wideRoadCameraState", "managerState", "navInstruction", "navRoute", "uiPlan",
-    "frogpilotCarControl", "frogpilotDeviceState", "frogpilotPlan",
+    "hpilotCarControl", "hpilotDeviceState", "hpilotPlan", "liveTorqueParameters",
   });
 
   Params params;
@@ -437,7 +437,7 @@ UIState::UIState(QObject *parent) : QObject(parent) {
 
   wifi = new WifiManager(this);
 
-  ui_update_frogpilot_params(this);
+  ui_update_hpilot_params(this);
 }
 
 void UIState::update() {
@@ -450,12 +450,12 @@ void UIState::update() {
   }
   emit uiUpdate(*this);
 
-  // Update FrogPilot variables when they are changed
-  if (paramsMemory.getBool("FrogPilotTogglesUpdated")) {
-    ui_update_frogpilot_params(this);
+  // Update Hpilot variables when they are changed
+  if (paramsMemory.getBool("HpilotTogglesUpdated")) {
+    ui_update_hpilot_params(this);
   }
 
-  // FrogPilot live variables that need to be constantly checked
+  // Hpilot live variables that need to be constantly checked
   scene.conditional_status = scene.conditional_experimental ? paramsMemory.getInt("CEStatus") : 0;
   scene.current_holiday_theme = scene.holiday_themes ? paramsMemory.getInt("CurrentHolidayTheme") : 0;
   scene.current_random_event = scene.random_events ? paramsMemory.getInt("CurrentRandomEvent") : 0;

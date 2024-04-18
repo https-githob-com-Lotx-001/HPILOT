@@ -165,7 +165,7 @@ class LongitudinalPlanner:
     # No change cost when user is controlling the speed, or when standstill
     prev_accel_constraint = not (reset_state or sm['carState'].standstill)
 
-    accel_limits = [sm['frogpilotPlan'].minAcceleration, sm['frogpilotPlan'].maxAcceleration]
+    accel_limits = [sm['hpilotPlan'].minAcceleration, sm['hpilotPlan'].maxAcceleration]
     if self.mpc.mode == 'acc':
       accel_limits_turns = limit_accel_in_turns(v_ego, sm['carState'].steeringAngleDeg, accel_limits, self.CP)
     else:
@@ -197,11 +197,11 @@ class LongitudinalPlanner:
       else:
         lead_states[index].reset()
 
-    self.mpc.set_weights(sm['frogpilotPlan'].jerk, prev_accel_constraint, personality=sm['controlsState'].personality)
+    self.mpc.set_weights(sm['hpilotPlan'].jerk, prev_accel_constraint, personality=sm['controlsState'].personality)
     self.mpc.set_accel_limits(accel_limits_turns[0], accel_limits_turns[1])
     self.mpc.set_cur_state(self.v_desired_filter.x, self.a_desired)
     x, v, a, j = self.parse_model(sm['modelV2'], self.v_model_error)
-    self.mpc.update(self.lead_one, self.lead_two, sm['frogpilotPlan'].vCruise, x, v, a, j, sm['frogpilotPlan'].tFollow, sm['frogpilotCarControl'].trafficModeActive, personality=sm['controlsState'].personality)
+    self.mpc.update(self.lead_one, self.lead_two, sm['hpilotPlan'].vCruise, x, v, a, j, sm['hpilotPlan'].tFollow, sm['hpilotCarControl'].trafficModeActive, personality=sm['controlsState'].personality)
 
     self.v_desired_trajectory_full = np.interp(ModelConstants.T_IDXS, T_IDXS_MPC, self.mpc.v_solution)
     self.a_desired_trajectory_full = np.interp(ModelConstants.T_IDXS, T_IDXS_MPC, self.mpc.a_solution)

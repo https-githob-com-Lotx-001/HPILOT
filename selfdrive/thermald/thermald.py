@@ -163,7 +163,7 @@ def hw_state_thread(end_event, hw_queue):
 
 
 def thermald_thread(end_event, hw_queue) -> None:
-  pm = messaging.PubMaster(['deviceState', 'frogpilotDeviceState'])
+  pm = messaging.PubMaster(['deviceState', 'hpilotDeviceState'])
   sm = messaging.SubMaster(["peripheralState", "gpsLocationExternal", "controlsState", "pandaStates"], poll="pandaStates")
 
   count = 0
@@ -242,12 +242,12 @@ def thermald_thread(end_event, hw_queue) -> None:
     except queue.Empty:
       pass
 
-    fpmsg = messaging.new_message('frogpilotDeviceState')
+    fpmsg = messaging.new_message('hpilotDeviceState')
 
-    fpmsg.frogpilotDeviceState.freeSpace = round(get_available_bytes(default=32.0 * (2 ** 30)) / (2 ** 30))
-    fpmsg.frogpilotDeviceState.usedSpace = round(get_used_bytes(default=0.0 * (2 ** 30)) / (2 ** 30))
+    fpmsg.hpilotDeviceState.freeSpace = round(get_available_bytes(default=32.0 * (2 ** 30)) / (2 ** 30))
+    fpmsg.hpilotDeviceState.usedSpace = round(get_used_bytes(default=0.0 * (2 ** 30)) / (2 ** 30))
 
-    pm.send("frogpilotDeviceState", fpmsg)
+    pm.send("hpilotDeviceState", fpmsg)
 
     msg.deviceState.freeSpacePercent = get_available_percent(default=100.0)
     msg.deviceState.memoryUsagePercent = int(round(psutil.virtual_memory().percent))

@@ -40,7 +40,7 @@ private:
   QPushButton* alert_notif;
   QPushButton* update_notif;
 
-  // FrogPilot variables
+  // Hpilot variables
   ElidedLabel* date;
 };
 
@@ -72,7 +72,7 @@ private:
   DriverViewWindow *driver_view;
   QStackedLayout *slayout;
 
-  // FrogPilot variables
+  // Hpilot variables
   Params params;
 
 private slots:

@@ -36,7 +36,7 @@ class PowerMonitoring:
     # Reset capacity if it's low
     self.car_battery_capacity_uWh = max((CAR_BATTERY_CAPACITY_uWh / 10), int(car_battery_capacity_uWh))
 
-    # FrogPilot variables
+    # Hpilot variables
     device_management = self.params.get_bool("DeviceManagement")
     device_shutdown_setting = self.params.get_int("DeviceShutdown") if device_management else 33
     # If the toggle is set for < 1 hour, configure by 15 minute increments

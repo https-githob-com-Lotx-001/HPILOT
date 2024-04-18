@@ -5,7 +5,7 @@ from openpilot.selfdrive.car.disable_ecu import disable_ecu
 from openpilot.selfdrive.car.interfaces import CarInterfaceBase
 from openpilot.selfdrive.car.subaru.values import CAR, GLOBAL_ES_ADDR, SubaruFlags
 
-FrogPilotButtonType = custom.FrogPilotCarState.ButtonEvent.Type
+HpilotButtonType = custom.HpilotCarState.ButtonEvent.Type
 
 class CarInterface(CarInterfaceBase):
 
@@ -23,7 +23,7 @@ class CarInterface(CarInterfaceBase):
     ret.autoResumeSng = False
 
     ret.buttonEvents = [
-      *create_button_events(self.CS.lkas_enabled, self.CS.lkas_previously_enabled, {1: FrogPilotButtonType.lkas}),
+      *create_button_events(self.CS.lkas_enabled, self.CS.lkas_previously_enabled, {1: HpilotButtonType.lkas}),
     ]
 
     # Detect infotainment message sent from the camera
@@ -109,9 +109,9 @@ class CarInterface(CarInterfaceBase):
     return ret
 
   # returns a car.CarState
-  def _update(self, c, frogpilot_variables):
+  def _update(self, c, hpilot_variables):
 
-    ret = self.CS.update(self.cp, self.cp_cam, self.cp_body, frogpilot_variables)
+    ret = self.CS.update(self.cp, self.cp_cam, self.cp_body, hpilot_variables)
 
     ret.events = self.create_common_events(ret).to_msg()
 
@@ -122,5 +122,5 @@ class CarInterface(CarInterfaceBase):
     if CP.flags & SubaruFlags.DISABLE_EYESIGHT:
       disable_ecu(logcan, sendcan, bus=2, addr=GLOBAL_ES_ADDR, com_cont_req=b'\x28\x03\x01')
 
-  def apply(self, c, now_nanos, frogpilot_variables):
-    return self.CC.update(c, self.CS, now_nanos, frogpilot_variables)
+  def apply(self, c, now_nanos, hpilot_variables):
+    return self.CC.update(c, self.CS, now_nanos, hpilot_variables)

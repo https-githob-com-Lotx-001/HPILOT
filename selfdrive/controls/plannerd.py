@@ -28,7 +28,7 @@ def plannerd_thread():
 
   longitudinal_planner = LongitudinalPlanner(CP)
   pm = messaging.PubMaster(['longitudinalPlan', 'uiPlan'])
-  sm = messaging.SubMaster(['carControl', 'carState', 'controlsState', 'modelV2', 'frogpilotCarControl', 'frogpilotPlan'], poll='modelV2')
+  sm = messaging.SubMaster(['carControl', 'carState', 'controlsState', 'modelV2', 'hpilotCarControl', 'hpilotPlan'], poll='modelV2')
 
   while True:
     sm.update()
