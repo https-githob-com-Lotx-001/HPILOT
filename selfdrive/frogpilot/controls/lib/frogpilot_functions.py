@@ -147,15 +147,15 @@ class FrogPilotFunctions:
       if os.listdir('/persist/comma/params') and os.listdir('/persist/params'):
         shutil.rmtree('/persist/comma/params')
 
-    frogpilot_boot_logo = f'{BASEDIR}/selfdrive/frogpilot/assets/other_images/frogpilot_boot_logo.png'
+    hpilot_boot_logo = f'{BASEDIR}/selfdrive/frogpilot/assets/other_images/hpilot_boot_logo.png'
     boot_logo_location = '/usr/comma/bg.jpg'
 
     remount_cmd = ['sudo', 'mount', '-o', 'remount,rw', '/']
     cls.run_cmd(remount_cmd, "File system remounted as read-write.", "Failed to remount file system")
 
-    if not filecmp.cmp(frogpilot_boot_logo, boot_logo_location, shallow=False):
-      copy_cmd = ['sudo', 'cp', frogpilot_boot_logo, boot_logo_location]
-      cls.run_cmd(copy_cmd, "Successfully replaced bg.jpg with frogpilot_boot_logo.png.", "Failed to replace boot logo")
+    if not filecmp.cmp(hpilot_boot_logo, boot_logo_location, shallow=False):
+      copy_cmd = ['sudo', 'cp', hpilot_boot_logo, boot_logo_location]
+      cls.run_cmd(copy_cmd, "Successfully replaced bg.jpg with hpilot_boot_logo.png.", "Failed to replace boot logo")
 
   @classmethod
   def uninstall_frogpilot(cls):
