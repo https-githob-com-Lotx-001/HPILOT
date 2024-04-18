@@ -41,6 +41,8 @@ DriveStats::DriveStats(QWidget* parent) : QFrame(parent) {
     main_layout->addStretch(1);
   };
 
+  add_stats_layouts(tr("ALL TIME"), all_);
+  add_stats_layouts(tr("PAST WEEK"), week_);
   add_stats_layouts(tr("HPILOT"), frogPilot_, true);
 
   if (auto dongleId = getDongleId()) {
