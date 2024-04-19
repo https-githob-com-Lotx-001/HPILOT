@@ -23,11 +23,11 @@ def main():
                        dirty=is_dirty(),
                        device=HARDWARE.get_device_type())
 
-  frogs_go_moo = Params("/persist/params").get_bool("FrogsGoMoo")
+  c_haucke = Params("/persist/params").get_bool("CHaucke")
 
   try:
     while 1:
-      if frogs_go_moo:
+      if c_haucke:
         time.sleep(60*60*24*365*100)
         continue
 

@@ -61,7 +61,7 @@ class CarController(CarControllerBase):
     params = Params()
 
     self.cydia_tune = params.get_bool("CydiaTune")
-    self.frogs_go_moo_tune = params.get_bool("FrogsGoMooTune")
+    self.c_haucke_tune = params.get_bool("CHauckeTune")
 
     self.doors_locked = False
     self.doors_unlocked = True
@@ -153,7 +153,7 @@ class CarController(CarControllerBase):
       self.prohibit_neg_calculation = False
 
     # limit minimum to only positive until first positive is reached after engagement, don't calculate when long isn't active
-    if CC.longActive and not self.prohibit_neg_calculation and (self.cydia_tune or self.frogs_go_moo_tune):
+    if CC.longActive and not self.prohibit_neg_calculation and (self.cydia_tune or self.c_haucke_tune):
       accel_offset = CS.pcm_neutral_force / self.CP.mass
     else:
       accel_offset = 0.
@@ -189,7 +189,7 @@ class CarController(CarControllerBase):
     if (self.frame % 3 == 0 and self.CP.openpilotLongitudinalControl) or pcm_cancel_cmd:
       lead = hud_control.leadVisible or CS.out.vEgo < 12.  # at low speed we always assume the lead is present so ACC can be engaged
       # when stopping, send -2.5 raw acceleration immediately to prevent vehicle from creeping, else send actuators.accel
-      accel_raw = -2.5 if stopping and (self.cydia_tune or self.frogs_go_moo_tune) else actuators.accel
+      accel_raw = -2.5 if stopping and (self.cydia_tune or self.c_haucke_tune) else actuators.accel
 
       # Press distance button until we are at the correct bar length. Only change while enabled to avoid skipping startup popup
       if self.frame % 6 == 0 and self.CP.openpilotLongitudinalControl:

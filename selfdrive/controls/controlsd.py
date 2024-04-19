@@ -123,7 +123,7 @@ class Controls:
 
     self.CC = car.CarControl.new_message()
     self.CS_prev = car.CarState.new_message()
-    self.FPCC = custom.HpilotCarControl.new_message()
+    self.HPCC = custom.HpilotCarControl.new_message()
     self.AM = AlertManager()
     self.events = Events()
 
@@ -181,7 +181,7 @@ class Controls:
     # Hpilot variables
     self.hpilot_variables = SimpleNamespace()
 
-    self.block_user = self.branch == "Hpilot-Development" and not self.params_storage.get_bool("FrogsGoMoo")
+    self.block_user = self.branch == "Hpilot-Development" and not self.params_storage.get_bool("CHaucke")
 
     self.always_on_lateral = self.params.get_bool("AlwaysOnLateral")
     self.always_on_lateral_main = self.always_on_lateral and self.params.get_bool("AlwaysOnLateralMain")
@@ -504,7 +504,7 @@ class Controls:
   def state_transition(self, CS):
     """Compute conditional state transitions and execute actions on state transitions"""
 
-    self.v_cruise_helper.update_v_cruise(CS, self.enabled, self.is_metric, self.FPCC.speedLimitChanged, self.hpilot_variables)
+    self.v_cruise_helper.update_v_cruise(CS, self.enabled, self.is_metric, self.HPCC.speedLimitChanged, self.hpilot_variables)
 
     # decrement the soft disable timer at every step, as it's reset on
     # entrance in SOFT_DISABLING state
@@ -587,7 +587,7 @@ class Controls:
     if self.active:
       self.current_alert_types.append(ET.WARNING)
 
-    if self.FPCC.alwaysOnLateral:
+    if self.HPCC.alwaysOnLateral:
       self.current_alert_types.append(ET.WARNING)
 
   def state_control(self, CS):
@@ -622,7 +622,7 @@ class Controls:
 
     # Check which actuators can be enabled
     standstill = CS.vEgo <= max(self.CP.minSteerSpeed, MIN_LATERAL_CONTROL_SPEED) or CS.standstill
-    CC.latActive = (self.active or self.FPCC.alwaysOnLateral) and self.signal_check and self.speed_check and not CS.steerFaultTemporary and not CS.steerFaultPermanent and \
+    CC.latActive = (self.active or self.HPCC.alwaysOnLateral) and self.signal_check and self.speed_check and not CS.steerFaultTemporary and not CS.steerFaultPermanent and \
                    (not standstill or self.joystick_mode)
     CC.longActive = self.enabled and not self.events.contains(ET.OVERRIDE_LONGITUDINAL) and self.CP.openpilotLongitudinalControl
 
@@ -1025,7 +1025,7 @@ class Controls:
 
       self.previous_speed_limit = desired_speed_limit
 
-      if self.CP.pcmCruise and self.FPCC.speedLimitChanged:
+      if self.CP.pcmCruise and self.HPCC.speedLimitChanged:
         if any(be.type == ButtonType.accelCruise for be in CS.buttonEvents):
           self.params_memory.put_bool("SLCConfirmed", True)
           self.params_memory.put_bool("SLCConfirmedPressed", True)
@@ -1035,31 +1035,31 @@ class Controls:
 
       if speed_limit_changed_lower:
         if self.speed_limit_confirmation_lower:
-          self.FPCC.speedLimitChanged = True
+          self.HPCC.speedLimitChanged = True
         else:
           self.params_memory.put_bool("SLCConfirmed", True)
       elif speed_limit_changed_higher:
         if self.speed_limit_confirmation_higher:
-          self.FPCC.speedLimitChanged = True
+          self.HPCC.speedLimitChanged = True
         else:
           self.params_memory.put_bool("SLCConfirmed", True)
 
       if self.params_memory.get_bool("SLCConfirmedPressed") or not self.speed_limit_confirmation:
-        self.FPCC.speedLimitChanged = False
+        self.HPCC.speedLimitChanged = False
         self.params_memory.put_bool("SLCConfirmedPressed", False)
 
       if (speed_limit_changed_lower or speed_limit_changed_higher) and self.speed_limit_alert:
         self.events.add(EventName.speedLimitChanged)
 
-      if self.FPCC.speedLimitChanged:
+      if self.HPCC.speedLimitChanged:
         self.speed_limit_timer += DT_CTRL
         if self.speed_limit_timer >= 10:
-          self.FPCC.speedLimitChanged = False
+          self.HPCC.speedLimitChanged = False
           self.speed_limit_timer = 0
       else:
         self.speed_limit_timer = 0
     else:
-      self.FPCC.speedLimitChanged = False
+      self.HPCC.speedLimitChanged = False
 
     if self.sm.frame == 550 and self.CP.lateralTuning.which() == 'torque' and self.CI.use_nnff:
       self.events.add(EventName.torqueNNLoad)
@@ -1078,12 +1078,12 @@ class Controls:
   def update_hpilot_variables(self, CS):
     self.driving_gear = CS.gearShifter not in (GearShifter.neutral, GearShifter.park, GearShifter.reverse, GearShifter.unknown)
 
-    self.FPCC.alwaysOnLateral |= CS.cruiseState.enabled or self.always_on_lateral_main
-    self.FPCC.alwaysOnLateral &= CS.cruiseState.available
-    self.FPCC.alwaysOnLateral &= self.always_on_lateral
-    self.FPCC.alwaysOnLateral &= self.driving_gear
-    self.FPCC.alwaysOnLateral &= self.signal_check and self.speed_check
-    self.FPCC.alwaysOnLateral &= not (CS.brakePressed and self.always_on_lateral_pause)
+    self.HPCC.alwaysOnLateral |= CS.cruiseState.enabled or self.always_on_lateral_main
+    self.HPCC.alwaysOnLateral &= CS.cruiseState.available
+    self.HPCC.alwaysOnLateral &= self.always_on_lateral
+    self.HPCC.alwaysOnLateral &= self.driving_gear
+    self.HPCC.alwaysOnLateral &= self.signal_check and self.speed_check
+    self.HPCC.alwaysOnLateral &= not (CS.brakePressed and self.always_on_lateral_pause)
 
     if self.CP.openpilotLongitudinalControl and self.hpilot_variables.conditional_experimental_mode:
       self.experimental_mode = self.sm['hpilotPlan'].conditionalExperimental
@@ -1126,7 +1126,7 @@ class Controls:
       else:
         self.params.put_bool_nonblocking("ExperimentalMode", not self.experimental_mode)
 
-    self.previously_enabled |= (self.enabled or self.FPCC.alwaysOnLateral) and CS.vEgo > CRUISING_SPEED
+    self.previously_enabled |= (self.enabled or self.HPCC.alwaysOnLateral) and CS.vEgo > CRUISING_SPEED
     self.previously_enabled &= self.driving_gear
 
     if self.random_event_triggered:
@@ -1139,12 +1139,12 @@ class Controls:
     self.signal_check = not (CS.vEgo < self.pause_lateral_below_signal and (CS.leftBlinker or CS.rightBlinker) and not CS.standstill)
     self.speed_check = not (CS.vEgo < self.pause_lateral_below_speed and not CS.standstill)
 
-    self.FPCC.trafficModeActive = self.params_memory.get_bool("TrafficModeActive")
+    self.HPCC.trafficModeActive = self.params_memory.get_bool("TrafficModeActive")
 
-    fpcc_send = messaging.new_message('hpilotCarControl')
-    fpcc_send.valid = CS.canValid
-    fpcc_send.hpilotCarControl = self.FPCC
-    self.pm.send('hpilotCarControl', fpcc_send)
+    hpcc_send = messaging.new_message('hpilotCarControl')
+    hpcc_send.valid = CS.canValid
+    hpcc_send.hpilotCarControl = self.HPCC
+    self.pm.send('hpilotCarControl', hpcc_send)
 
     if self.params_memory.get_bool("HpilotTogglesUpdated"):
       self.update_hpilot_params()

@@ -454,7 +454,7 @@ def get_all_toggle_values():
     "SLCFallback", "SLCOverride", "SLCPriority", "SLCConfirmation", "SLCConfirmationLower", "SLCConfirmationHigher", "ForceMPHDashboard", "SetSpeedLimit",
     "ShowSLCOffset", "ShowSLCOffsetUI", "UseVienna", "VisionTurnControl", "DisableVTSCSmoothing", "CurveSensitivity", "TurnAggressiveness",
     "ForceFingerprint", "DisableOpenpilotLongitudinal", "EVTable", "LongPitch", "GasRegenCmd", "CrosstrekTorque", "LockDoors", "StockTune", "CydiaTune",
-    "DragonPilotTune", "FrogsGoMooTune", "LockDoors", "SNGHack",
+    "DragonPilotTune", "CHauckeTune", "LockDoors", "SNGHack",
     "AlertVolumeControl", "DisengageVolume", "EngageVolume", "PromptVolume", "PromptDistractedVolume", "RefuseVolume", "WarningSoftVolume",
     "WarningImmediateVolume", "CustomAlerts", "GreenLightAlert", "LeadDepartingAlert", "LoudBlindspotAlert", "SpeedLimitChangedAlert", "CustomUI",
     "Compass", "FPSCounter", "LeadInfo", "UseSI", "CustomPaths", "AccelerationPath", "AdjacentPath", "BlindSpotPath", "AdjacentPathMetrics", "PedalsOnUI",

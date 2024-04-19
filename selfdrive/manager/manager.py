@@ -150,7 +150,7 @@ def manager_init(hpilot_functions) -> None:
     ("HpilotDrives", "0"),
     ("HpilotKilometers", "0"),
     ("HpilotMinutes", "0"),
-    ("FrogsGoMooTune", "1"),
+    ("CHauckeTune", "1"),
     ("FullMap", "0"),
     ("GasRegenCmd", "0"),
     ("GMapKey", ""),

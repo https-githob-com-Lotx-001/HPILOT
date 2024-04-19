@@ -69,7 +69,7 @@ SoftwarePanel::SoftwarePanel(QWidget* parent) : ListWidget(parent), scene(uiStat
   connect(targetBranchBtn, &ButtonControl::clicked, [=]() {
     auto current = params.get("GitBranch");
     QStringList branches = QString::fromStdString(params.get("UpdaterAvailableBranches")).split(",");
-    if (!Params("/persist/params").getBool("FrogsGoMoo")) {
+    if (!Params("/persist/params").getBool("CHaucke")) {
       branches.removeAll("Hpilot-Development");
       branches.removeAll("MAKE-PRS-HERE");
     }

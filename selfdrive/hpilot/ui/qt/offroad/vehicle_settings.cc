@@ -111,7 +111,7 @@ HpilotVehiclesPanel::HpilotVehiclesPanel(SettingsWindow *parent) : HpilotListWid
     {"CrosstrekTorque", tr("Subaru Crosstrek Torque Increase"), tr("Increases the maximum allowed torque for the Subaru Crosstrek."), ""},
 
     {"LockDoors", tr("Lock Doors In Drive"), tr("Automatically lock the doors when in drive and unlock when in park."), ""},
-    {"LongitudinalTune", tr("Longitudinal Tune"), tr("Use a custom Toyota longitudinal tune.\n\nCydia = More focused on TSS-P vehicles but works for all Toyotas\n\nDragonPilot = Focused on TSS2 vehicles\n\nHpilot = Takes the best of both worlds with some personal tweaks focused around FrogsGoMoo's 2019 Lexus ES 350"), ""},
+    {"LongitudinalTune", tr("Longitudinal Tune"), tr("Use a custom Toyota longitudinal tune.\n\nCydia = More focused on TSS-P vehicles but works for all Toyotas\n\nDragonPilot = Focused on TSS2 vehicles\n\nHpilot = Takes the best of both worlds with some personal tweaks focused around CHaucke's 2019 Lexus ES 350"), ""},
     {"SNGHack", tr("Stop and Go Hack"), tr("Enable the 'Stop and Go' hack for vehicles without stock stop and go functionality."), ""},
   };
 
@@ -123,7 +123,7 @@ HpilotVehiclesPanel::HpilotVehiclesPanel(SettingsWindow *parent) : HpilotListWid
         {"StockTune", tr("Stock")},
         {"CydiaTune", tr("Cydia")},
         {"DragonPilotTune", tr("DragonPilot")},
-        {"FrogsGoMooTune", tr("Hpilot")},
+        {"CHauckeTune", tr("Hpilot")},
       };
       toggle = new HpilotButtonsParamControl(param, title, desc, icon, tuneOptions);
 

@@ -220,7 +220,7 @@ def get_car(params, logcan, sendcan, disable_openpilot_long, experimental_long_a
     params.put("CarMake", candidate.split(' ')[0].title())
     params.put("CarModel", candidate)
 
-  if get_short_branch() == "Hpilot-Development" and not Params("/persist/params").get_bool("FrogsGoMoo"):
+  if get_short_branch() == "Hpilot-Development" and not Params("/persist/params").get_bool("CHaucke"):
     cloudlog.event("Blocked user from using the 'Hpilot-Development' branch", fingerprints=repr(fingerprints), error=True)
     candidate = "mock"
     fingerprint_log = threading.Thread(target=sentry.capture_fingerprint, args=(params, candidate, True,))

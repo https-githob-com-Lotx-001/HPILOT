@@ -148,7 +148,7 @@ class CarInterface(CarInterfaceBase):
       tune.kpV = [0.8, 1.]
       tune.kiBP = [0., 5.]
       tune.kiV = [0.3, 1.]
-    elif params.get_bool("FrogsGoMooTune"):
+    elif params.get_bool("CHauckeTune"):
       # on stock Toyota this is -2.5
       ret.stopAccel = -2.5
       ret.stoppingDecelRate = 0.09
