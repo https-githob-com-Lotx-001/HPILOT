@@ -1561,13 +1561,6 @@ void AnnotatedCameraWidget::updateHpilotWidgets() {
   turnSignalLeft = scene.turn_signal_left;
   turnSignalRight = scene.turn_signal_right;
 
-  showTorque = scene.show_torque;
-  latAccelFactor = scene.lat_accel;
-  frictionCoefficient = scene.friction;
-
-  latAccelFactor = scene.lat_accel;
-  frictionCoefficient = scene.friction;
-
   if (currentHolidayTheme != scene.current_holiday_theme || customSignals != scene.custom_signals) {
     currentHolidayTheme = scene.current_holiday_theme;
     customSignals = scene.custom_signals;
@@ -2053,14 +2046,11 @@ void AnnotatedCameraWidget::drawStatusBar(QPainter &p) {
 
   QString roadName = roadNameUI ? QString::fromStdString(paramsMemory.get("RoadName")) : QString();
 
-  if (showTorque) {
-    newStatus = "[ Lateral Acceleration: " + QString::number(latAccelFactor, 'f', 3) + " ]  |  [ Friction: " + QString::number(frictionCoefficient, 'f', 3) + " ]";
-  } else {
-    if (alwaysOnLateralActive && !showTorque && showAlwaysOnLateralStatusBar) {
-      newStatus = tr("Always On Lateral active") + (mapOpen ? "" : tr(". Press the \"Cruise Control\" button to disable"));
-    } else if (showConditionalExperimental && !showTorqueStatusBar) {
-      newStatus = conditionalStatusMap[status != STATUS_DISENGAGED ? conditionalStatus : 0];
-    }
+  if (alwaysOnLateralActive && showAlwaysOnLateralStatusBar) {
+    newStatus = tr("Always On Lateral active") + (mapOpen ? "" : tr(". Press the \"Cruise Control\" button to disable"));
+  } else if (showConditionalExperimentalStatusBar) {
+    newStatus = conditionalStatusMap[status != STATUS_DISENGAGED ? conditionalStatus : 0];
+  }
 
   QString distanceSuffix = tr(". Long press the \"distance\" button to revert");
   QString lkasSuffix = tr(". Double press the \"LKAS\" button to revert");
