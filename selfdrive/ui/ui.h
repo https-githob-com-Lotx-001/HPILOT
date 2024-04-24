@@ -256,6 +256,8 @@ typedef struct UIScene {
   float speed_limit;
   float speed_limit_offset;
   float speed_limit_overridden_speed;
+  float steer_ratio;
+  float stiffness_factor;
   float unconfirmed_speed_limit;
 
   int alert_size;
@@ -279,6 +281,7 @@ typedef struct UIScene {
   int screen_timeout;
   int screen_timeout_onroad;
   int steering_angle_deg;
+  int steering_torque;
   int stopped_equivalence;
   int wheel_icon;
 

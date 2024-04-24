@@ -236,6 +236,7 @@ static void update_state(UIState *s) {
     scene.reverse = carState.getGearShifter() == cereal::CarState::GearShifter::REVERSE;
     scene.standstill = carState.getStandstill();
     scene.steering_angle_deg = carState.getSteeringAngleDeg();
+    scene.steering_torque = carState.getSteeringTorque();
     scene.turn_signal_left = carState.getLeftBlinker();
     scene.turn_signal_right = carState.getRightBlinker();
   }
@@ -300,6 +301,11 @@ static void update_state(UIState *s) {
       scene.lat_accel = scene.custom_live_lat_accel;
       scene.friction = scene.custom_live_friction;
     }
+  }
+  if(sm.updated("liveParameters")) {
+    auto live_params = sm["liveParameters"].getLiveParameters();
+    scene.steer_ratio = live_params.getSteerRatio();
+    scene.stiffness_factor = live_params.getStiffnessFactor();
   }
 }
 
@@ -437,7 +443,7 @@ UIState::UIState(QObject *parent) : QObject(parent) {
     "modelV2", "controlsState", "liveCalibration", "radarState", "deviceState",
     "pandaStates", "carParams", "driverMonitoringState", "carState", "liveLocationKalman", "driverStateV2",
     "wideRoadCameraState", "managerState", "navInstruction", "navRoute", "uiPlan",
-    "hpilotCarControl", "hpilotDeviceState", "hpilotPlan", "liveTorqueParameters",
+    "hpilotCarControl", "hpilotDeviceState", "hpilotPlan", "liveTorqueParameters", "liveParameters",
   });
 
   Params params;

@@ -294,9 +294,12 @@ void OnroadWindow::paintEvent(QPaintEvent *event) {
   }
 
   if (scene.show_torque) {
-    QString tuneDisplayString = QString("Lateral Acceleration: %1 | Friction: %2")
+    QString tuneDisplayString = QString("Lateral Acceleration: %1 | Friction: %2 | Steer Ratio: %3 | Stiffness Factor: %4 | Steering Torque: %5")
       .arg(scene.lat_accel, 0, 'f', 3)
-      .arg(scene.friction, 0, 'f', 3);
+      .arg(scene.friction, 0, 'f', 3)
+      .arg(scene.steer_ratio, 0, 'f', 2)
+      .arg(scene.stiffness_factor, 0, 'f', 2)
+      .arg(scene.steering_torque, 0, 10);
 
     p.setFont(InterFont(30, QFont::DemiBold));
     p.setRenderHint(QPainter::TextAntialiasing);
