@@ -617,7 +617,7 @@ HpilotControlsPanel::HpilotControlsPanel(SettingsWindow *parent) : HpilotListWid
       });
       toggle = qolToggle;
     } else if (param == "CustomCruise") {
-      toggle = new hpilotParamValueControl(param, title, desc, icon, 1, 99, std::map<int, QString>(), this, false, tr(" mph"));
+      toggle = new HpilotParamValueControl(param, title, desc, icon, 1, 99, std::map<int, QString>(), this, false, tr(" mph"));
     } else if (param == "CustomCruiseLong") {
       toggle = new HpilotParamValueControl(param, title, desc, icon, 1, 99, std::map<int, QString>(), this, false, tr(" mph"));
     } else if (param == "OnroadDistanceButton") {
@@ -874,7 +874,7 @@ void HpilotControlsPanel::showEvent(QShowEvent *event, const UIState &s) {
   downloadModelBtn->setEnabled(s.scene.online && (!s.scene.started || s.scene.parked));
 }
 
-void FrogPilotControlsPanel::updateState(const UIState &s) {
+void HpilotControlsPanel::updateState(const UIState &s) {
   if (!isVisible()) return;
 
   started = s.scene.started;
@@ -985,8 +985,8 @@ void HpilotControlsPanel::updateMetric() {
     offset3Toggle->updateControl(-99, 99, tr(" kph"));
     offset4Toggle->updateControl(-99, 99, tr(" kph"));
 
-    pauseLateralToggle->updateControl(0, 99, tr(" kph"));
-    pauseLateralToggle->updateControl(0, 99, tr(" kph"));
+    pauseLateralSpeedToggle->updateControl(0, 99, tr(" kph"));
+    pauseLateralSpeedToggle->updateControl(0, 99, tr(" kph"));
     setSpeedOffsetToggle->updateControl(0, 150, tr(" kph"));
 
     stoppingDistanceToggle->updateControl(0, 5, tr(" meters"));
@@ -1011,8 +1011,8 @@ void HpilotControlsPanel::updateMetric() {
     offset3Toggle->updateControl(-99, 99, tr(" mph"));
     offset4Toggle->updateControl(-99, 99, tr(" mph"));
 
-    pauseLateralToggle->updateControl(0, 99, tr(" mph"));
-    pauseLateralToggle->updateControl(0, 99, tr(" mph"));
+    pauseLateralSpeedToggle->updateControl(0, 99, tr(" mph"));
+    pauseLateralSpeedToggle->updateControl(0, 99, tr(" mph"));
     setSpeedOffsetToggle->updateControl(0, 99, tr(" mph"));
 
     stoppingDistanceToggle->updateControl(0, 10, tr(" feet"));
@@ -1024,8 +1024,8 @@ void HpilotControlsPanel::updateMetric() {
   offset2Toggle->refresh();
   offset3Toggle->refresh();
   offset4Toggle->refresh();
-  pauseLateralToggle->refresh();
-  pauseLateralToggle->refresh();
+  pauseLateralSpeedToggle->refresh();
+  pauseLateralSpeedToggle->refresh();
   setSpeedOffsetToggle->refresh();
   stoppingDistanceToggle->refresh();
 }

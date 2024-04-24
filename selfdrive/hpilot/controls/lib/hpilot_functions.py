@@ -79,7 +79,7 @@ class HpilotFunctions:
 
     for old_backup in auto_backups[4:]:
       shutil.rmtree(old_backup)
-      print(f"Deleted oldest FrogPilot backup to maintain limit: {os.path.basename(old_backup)}")
+      print(f"Deleted oldest Hpilot backup to maintain limit: {os.path.basename(old_backup)}")
 
     branch = get_short_branch()
     commit = get_commit_date()[12:-16]

@@ -5,7 +5,7 @@ from openpilot.common.params import Params
 from openpilot.system.hardware import PC, TICI
 from openpilot.selfdrive.manager.process import PythonProcess, NativeProcess, DaemonProcess
 
-from openpilot.selfdrive.frogpilot.controls.lib.model_manager import RADARLESS_MODELS
+from openpilot.selfdrive.hpilot.controls.lib.model_manager import RADARLESS_MODELS
 
 RADARLESS = Params().get("Model", encoding='utf-8') in RADARLESS_MODELS
 WEBCAM = os.getenv("USE_WEBCAM") is not None

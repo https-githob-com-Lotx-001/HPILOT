@@ -204,7 +204,7 @@ def thermald_thread(end_event, hw_queue) -> None:
 
   fan_controller = None
 
-  # FrogPilot variables
+  # Hpilot variables
   device_management = params.get_bool("DeviceManagement")
   offline_mode = device_management and params.get_bool("OfflineMode")
 
